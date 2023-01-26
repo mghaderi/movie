@@ -16,7 +16,7 @@ class CreateMediaDetailsTable extends Migration
         Schema::create('media_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('media_id')->nullable();
-            $table->string('type');
+            $table->string('type')->nullable();
             $table->timestamps();
         });
         Schema::table('media_details', function (Blueprint $table) {
