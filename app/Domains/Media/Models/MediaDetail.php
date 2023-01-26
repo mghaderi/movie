@@ -5,15 +5,15 @@ namespace App\Domains\Media\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property string|null $tt_name
+ * @property int|null $media_id
  * @property string|null $type
  */
-class Media extends Model {
+class MediaDetail extends Model {
 
-    protected $table = 'medias';
+    protected $table = 'media_details';
 
     protected $fillable = [
-        'tt_name',
+        'media_id',
         'type'
     ];
 }
