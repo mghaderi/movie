@@ -2,6 +2,10 @@
 
 namespace App\Domains\Media\Models;
 
+use App\Domains\Word\Models\Language;
+use App\Models\Interfaces\MorphInterface;
+use App\Models\Traits\HasMorph;
+use App\Services\PossibleMorphService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +20,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Collection|null $mediaDetailRelationsData
  * @property Collection|null $mediaDetailData
  */
-class MediaDetailRelation extends Model {
+class MediaDetailRelation extends Model implements MorphInterface {
+
+    use HasMorph;
 
     protected $table = 'media_detail_relations';
 
@@ -50,5 +56,12 @@ class MediaDetailRelation extends Model {
             'media_detail_relations_id',
             'media_detail_data_id',
         );
+    }
+
+    public function setPossibleMorphClasses(PossibleMorphService $possibleMorphService): PossibleMorphService {
+        $possibleMorphService->setPossibleMorphs(
+            Language::class
+        );
+        return $possibleMorphService;
     }
 }
