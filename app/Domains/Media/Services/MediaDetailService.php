@@ -15,7 +15,9 @@ class MediaDetailService
     public function mediaDetailTypes(): array {
         return [
             'colaborator',
-            'link',
+            'source',
+            'cover',
+            'trailer',
             'location',
             'genre',
             'language',
