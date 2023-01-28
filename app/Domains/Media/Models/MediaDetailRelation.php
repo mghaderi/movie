@@ -44,7 +44,7 @@ class MediaDetailRelation extends Model implements MorphInterface {
     public function mediaDetailRelationsData(): HasMany {
         return $this->hasMany(
             MediaDetailRelationDatum::class,
-            'media_detail_relations_id',
+            'media_detail_relation_id',
             'id'
         );
     }
@@ -53,8 +53,8 @@ class MediaDetailRelation extends Model implements MorphInterface {
         return $this->belongsToMany(
             MediaDetailDatum::class,
             'media_detail_relations_data',
-            'media_detail_relations_id',
-            'media_detail_data_id',
+            'media_detail_relation_id',
+            'media_detail_datum_id',
         );
     }
 

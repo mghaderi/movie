@@ -38,7 +38,7 @@ class MediaDetailDatum extends Model {
     public function mediaDetailRelationsData(): HasMany {
         return $this->hasMany(
             MediaDetailRelationDatum::class,
-            'media_detail_data_id',
+            'media_detail_datum_id',
             'id'
         );
     }
@@ -47,8 +47,8 @@ class MediaDetailDatum extends Model {
         return $this->belongsToMany(
             MediaDetailRelation::class,
             'media_detail_relations_data',
-            'media_detail_data_id',
-            'media_detail_relations_id',
+            'media_detail_datum_id',
+            'media_detail_relation_id',
         );
     }
 }
