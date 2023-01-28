@@ -2,6 +2,7 @@
 
 namespace App\Domains\Media\Models;
 
+use App\Models\Traits\IsMorph;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -11,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $quality
  */
 class Link extends Model {
+
+    use IsMorph;
 
     protected $table = 'links';
 

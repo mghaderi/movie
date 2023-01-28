@@ -2,12 +2,16 @@
 
 namespace App\Services;
 
+use App\Domains\Media\Models\Link;
 use App\Domains\Word\Models\Language;
+use App\Domains\Word\Models\Word;
 
 class PossibleMorphService {
 
     private $allMorphs = [
-        Language::class => 'language'
+        Language::class => 'language',
+        Word::class => 'word',
+        Link::class => 'link',
     ];
     private $possibleMorphs = [];
 

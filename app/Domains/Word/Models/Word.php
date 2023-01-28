@@ -2,6 +2,7 @@
 
 namespace App\Domains\Word\Models;
 
+use App\Models\Traits\IsMorph;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,8 +12,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Collection $wordDetailBigs
  * @property Collection $wordDetailSmalls
  */
-class Word extends Model
-{
+class Word extends Model {
+
+    use IsMorph;
+
     protected $table = 'words';
 
     protected $fillable = [
