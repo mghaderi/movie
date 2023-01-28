@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property string|null $type
  * @property Collection $mediaDetails
  * @property Collection $mediaDetailData
+ * @property Collection $mediaDetailRelations
  */
 class Media extends Model {
 
@@ -33,6 +34,17 @@ class Media extends Model {
     public function mediaDetailData(): HasManyThrough {
         return $this->hasManyThrough(
             MediaDetailDatum::class,
+            MediaDetail::class,
+            'media_id',
+            'media_detail_id',
+            'id',
+            'id',
+        );
+    }
+
+    public function mediaDetailRelations(): HasManyThrough {
+        return $this->hasManyThrough(
+            MediaDetailRelation::class,
             MediaDetail::class,
             'media_id',
             'media_detail_id',

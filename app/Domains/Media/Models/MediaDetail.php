@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $type
  * @property Media|null $media
  * @property Collection $mediaDetailData
+ * @property Collection $mediaDetailRelation
  */
 class MediaDetail extends Model {
 
@@ -34,6 +35,14 @@ class MediaDetail extends Model {
     public function mediaDetailData(): HasMany {
         return $this->hasMany(
             MediaDetailDatum::class,
+            'media_detail_id',
+            'id'
+        );
+    }
+
+    public function mediaDetailRelations(): HasMany {
+        return $this->hasMany(
+            MediaDetailRelation::class,
             'media_detail_id',
             'id'
         );
