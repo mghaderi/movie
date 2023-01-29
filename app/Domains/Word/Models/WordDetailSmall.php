@@ -2,6 +2,7 @@
 
 namespace App\Domains\Word\Models;
 
+use App\Domains\Word\Models\Interfaces\WordDetailInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -12,8 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Language|null $language
  * @property Word|null $word
  */
-class WordDetailSmall extends Model
-{
+class WordDetailSmall extends Model implements WordDetailInterface {
     protected $table = 'word_detail_smalls';
 
     protected $fillable = [
