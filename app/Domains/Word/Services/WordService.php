@@ -18,4 +18,12 @@ class WordService
             'big'
         ];
     }
+
+    public function fetchOrCreateModel(): Word
+    {
+        if ($this->word instanceof Word::class) {
+            return $this->word;
+        }
+        return (new Word());
+    }
 }

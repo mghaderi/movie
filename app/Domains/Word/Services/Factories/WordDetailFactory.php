@@ -4,7 +4,6 @@ namespace App\Domains\Word\Services\Factories;
 
 use App\Domains\Word\Exceptions\Factories\CanNotGenerateWordDetailException;
 use App\Domains\Word\Models\Language;
-use App\Domains\Word\Models\WordDetailSmall;
 use App\Domains\Word\Services\Interfaces\WordDetailServiceInterface;
 use Illuminate\Support\Facades\DB;
 
@@ -18,9 +17,6 @@ class WordDetailFactory {
 
     public function generate(Language $language, string $value): WordDetailServiceInterface {
         DB::beginTransaction();
-        /**
-         * @var $model WordDetailSmall
-         */
         $model = $this->wordDetailService->fetchOrCreateModel();
         $model->language_id = $language->id;
         $model->value = $value;
