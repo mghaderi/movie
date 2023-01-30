@@ -36,6 +36,14 @@ class LanguageService
         return (new Language());
     }
 
+    public function fetchLanguage(string $name): Language {
+        $language = Language::where('name', $name)->first();
+        if ($language instanceof Language) {
+            return $language;
+        }
+        throw new ModelNotFoundException('can not find language model for name: ' . $name);
+    }
+
     public function setLanguageName(string $name): void {
         $this->language->name = $name;
     }
