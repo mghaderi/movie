@@ -2,10 +2,9 @@
 
 namespace App\Domains\Word\Services\Factories;
 
-use App\Domains\Word\Exceptions\Factories\CanNotGenerateWordDetailException;
-use App\Domains\Word\Models\Language;
-use App\Domains\Word\Models\WordDetailSmall;
-use App\Domains\Word\Services\Interfaces\WordDetailServiceInterface;
+use App\Domains\Word\Exceptions\Factories\CanNotGenerateWordException;
+use App\Domains\Word\Models\Word;
+use App\Domains\Word\Services\Factories\DTOs\WordFactoryDTO;
 use App\Domains\Word\Services\WordService;
 use Illuminate\Support\Facades\DB;
 
@@ -13,21 +12,27 @@ class WordFactory {
 
     public WordService $wordService;
 
-    public function __construct(WordService $wordService) {
-        $this->wordService = $wordService;
+    public function __construct() {
+        $this->wordService = new WordService();
     }
 
-    public function generate(WordDetailServiceInterface ...$wordDetailServices): WordService {
-        /** @todo */
-//        DB::beginTransaction();
-//        $model = $this->wordService->fetchOrCreateModel();
-//        $model->type = $language->id;
-//        $model->value = $value;
-//        if ($model->save()) {
-//            $this->wordDetailService->setModel($model);
-//            DB::commit();
-//            return $this->wordDetailService;
-//        }
-//        throw new CanNotGenerateWordDetailException('error in generating word: ', implode($model->getAttributes()));
+    public function generate(string $type, WordFactoryDTO ...$wordFactoryDTOs): Word {
+        if (! empty($wordFactoryDTOs)) {
+            DB::beginTransaction();
+            $this->wordService->setWord($this->wordService->fetchOrCreateWord());
+            $this->wordService->setWordType($type);
+            $this->wordService->saveWord();
+            foreach ($wordFactoryDTOs as $wordFactoryDTO) {
+                $wordDetailService = $this->wordService->wordDetailServiceObject();
+                $wordDetailService->setDetailWord($wordDetailService->fetchOrCreateWordDetail());
+                $wordDetailService->setLanguage($wordFactoryDTO->language);
+                $wordDetailService->setValue($wordFactoryDTO->value);
+                $wordDetailService->setWord($this->wordService->fetchOrCreateWord());
+                $wordDetailService->saveWordDetail();
+            }
+            DB::commit();
+            return $this->wordService->fetchOrCreateWord();
+        }
+        throw new CanNotGenerateWordException('error in generating word');
     }
 }

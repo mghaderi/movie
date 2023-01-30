@@ -5,7 +5,7 @@ namespace App\Domains\Word\Exceptions\Factories;
 use Exception;
 use Throwable;
 
-class CanNotGenerateWordDetailException extends Exception {
+class CanNotGenerateWordException extends Exception {
     /**
      * @var
      */

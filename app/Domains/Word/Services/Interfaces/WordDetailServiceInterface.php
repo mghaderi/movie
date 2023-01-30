@@ -3,8 +3,14 @@
 namespace App\Domains\Word\Services\Interfaces;
 
 use App\Domains\Word\Models\Interfaces\WordDetailInterface;
+use App\Domains\Word\Models\Language;
+use App\Domains\Word\Models\Word;
 
 interface WordDetailServiceInterface {
-    public function fetchOrCreateModel(): WordDetailInterface;
-    public function setModel(WordDetailInterface $wordDetail): void;
+    public function fetchOrCreateWordDetail(): WordDetailInterface;
+    public function setDetailWord(WordDetailInterface $wordDetail): void;
+    public function setLanguage(Language $language): void;
+    public function setValue(string $value): void;
+    public function setWord(Word $word): void;
+    public function saveWordDetail(): void;
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b15a308208b4ac1998e6baad8601881c",
+    "content-hash": "349b9e4f141ff49ff8318bf66187ade2",
     "packages": [
         {
             "name": "arcanedev/log-viewer",
@@ -4723,6 +4723,61 @@
                 }
             ],
             "time": "2020-12-13T05:41:31+00:00"
+        },
+        {
+            "name": "romanzipp/dto",
+            "version": "2.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/romanzipp/DTO.git",
+                "reference": "0a5fec28bf06f8ed2988007e72068f2c1fae642d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/romanzipp/DTO/zipball/0a5fec28bf06f8ed2988007e72068f2c1fae642d",
+                "reference": "0a5fec28bf06f8ed2988007e72068f2c1fae642d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "phpstan/phpstan": "^0.12.99|^1.0",
+                "phpunit/phpunit": "^9.0",
+                "romanzipp/php-cs-fixer-config": "^3.0",
+                "symfony/var-dumper": "^5.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "romanzipp\\DTO\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "romanzipp",
+                    "email": "ich@ich.wtf",
+                    "homepage": "https://ich.wtf"
+                }
+            ],
+            "description": "A strongly typed Data Transfer Object without magic for PHP 7.4+",
+            "support": {
+                "issues": "https://github.com/romanzipp/DTO/issues",
+                "source": "https://github.com/romanzipp/DTO/tree/2.3.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/romanzipp",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-12-14T13:49:19+00:00"
         },
         {
             "name": "spatie/laravel-activitylog",
@@ -12251,5 +12306,5 @@
         "php": "^7.4|^8.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.3.0"
 }
