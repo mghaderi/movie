@@ -22,14 +22,15 @@ class LanguageService
                 $this->language->saveOrFail();
                 return;
             } catch (\Exception|\Throwable $exception) {
-                throw new CanNotSaveModelException('language model can not be saved. attributes: ' . implode($this->language->getAttributes()));
+                throw new CanNotSaveModelException('language model can not be saved. attributes: ' .
+                    implode($this->language->getAttributes()));
             }
         }
         throw new CanNotFindModelException('can not find language model');
     }
 
     public function fetchOrCreateLanguage(): Language {
-        if ($this->language instanceof Language::class) {
+        if ($this->language instanceof Language) {
             return $this->language;
         }
         return (new Language());

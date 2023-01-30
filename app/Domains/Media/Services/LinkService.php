@@ -3,14 +3,13 @@
 namespace App\Domains\Media\Services;
 
 use App\Domains\Media\Models\Link;
+use App\Exceptions\CanNotFindModelException;
+use App\Exceptions\CanNotSaveModelException;
+use App\Exceptions\InvalidTypeException;
 
 class LinkService
 {
-    public Link|null $link;
-
-    public function __construct(Link|null $link = null) {
-        $this->link = $link;
-    }
+    private ?Link $link;
 
     public function linkTypes(): array {
         return [
@@ -19,5 +18,65 @@ class LinkService
         ];
     }
 
+    public function setLinkType(string $type) {
+        if ($this->link instanceof Link) {
+            foreach ($this->linkTypes() as $linkType) {
+                if ($type === $linkType) {
+                    $this->link->type = $linkType;
+                    return;
+                }
+            }
+            throw new InvalidTypeException('link type: ' . $type . ' is invalid');
+        }
+        throw new CanNotFindModelException('can not find link model');
+    }
+
+    public function setLinkAddress(string $address): void {
+        if ($this->link instanceof Link) {
+            $this->link->address = $address;
+            return;
+        }
+        throw new CanNotFindModelException('can not find link model');
+    }
+
+    public function setLinkExtension(string $extension): void {
+        if ($this->link instanceof Link) {
+            $this->link->extension = $extension;
+            return;
+        }
+        throw new CanNotFindModelException('can not find link model');
+    }
+
+    public function setLinkQuality(string $quality): void {
+        if ($this->link instanceof Link) {
+            $this->link->quality = $quality;
+            return;
+        }
+        throw new CanNotFindModelException('can not find link model');
+    }
+
+    public function setLink(Link $link): void {
+        $this->link = $link;
+    }
+
+    public function saveLink() {
+        if ($this->link instanceof Link) {
+            try {
+                $this->link->saveOrFail();
+                return;
+            } catch (\Exception|\Throwable $exception) {
+                throw new CanNotSaveModelException('link model can not be saved. attributes: ' .
+                    implode($this->link->getAttributes()));
+            }
+        }
+        throw new CanNotFindModelException('can not find link model');
+    }
+
+    public function fetchOrCreateLink(): Link {
+        if ($this->link instanceof Link) {
+            return $this->link;
+        }
+        return (new Link());
+    }
 
 }

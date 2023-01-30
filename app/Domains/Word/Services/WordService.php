@@ -2,7 +2,6 @@
 
 namespace App\Domains\Word\Services;
 
-use App\Domains\Word\Models\Interfaces\WordDetailInterface;
 use App\Domains\Word\Models\Word;
 use App\Domains\Word\Models\WordDetailBig;
 use App\Domains\Word\Models\WordDetailSmall;
@@ -26,14 +25,6 @@ class WordService
                 'service' => WordDetailBigService::class,
             ]
         ];
-    }
-
-    public function wordDetailClassName(string $type): string {
-        $className = $this->wordDetailClasses()[$type]['class'] ?? '';
-        if (empty($className)) {
-            throw new InvalidTypeException('word type: ' . $type . ' is invalid');
-        }
-        return $className;
     }
 
     public function wordDetailServiceObject(): WordDetailServiceInterface {
@@ -77,7 +68,7 @@ class WordService
     }
 
     public function fetchOrCreateWord(): Word {
-        if ($this->word instanceof Word::class) {
+        if ($this->word instanceof Word) {
             return $this->word;
         }
         return (new Word());
