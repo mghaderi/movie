@@ -6,9 +6,9 @@ use App\Domains\Word\Models\Word;
 use App\Domains\Word\Models\WordDetailBig;
 use App\Domains\Word\Models\WordDetailSmall;
 use App\Domains\Word\Services\Interfaces\WordDetailServiceInterface;
-use App\Exceptions\CanNotFindModelException;
 use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\InvalidTypeException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class WordService
 {
@@ -31,11 +31,11 @@ class WordService
         if ($this->word instanceof Word) {
             $className = $this->wordDetailClasses()[$this->word->type]['service'] ?? '';
             if (empty($className)) {
-                throw new CanNotFindModelException('can not find word service model for type: ' . $this->word->type);
+                throw new ModelNotFoundException('can not find word service model for type: ' . $this->word->type);
             }
             return new $className();
         }
-        throw new CanNotFindModelException('can not find word model');
+        throw new ModelNotFoundException('can not find word model');
     }
 
     public function setWordType(string $type) {
@@ -48,7 +48,7 @@ class WordService
             }
             throw new InvalidTypeException('word type: ' . $type . ' is invalid');
         }
-        throw new CanNotFindModelException('can not find word model');
+        throw new ModelNotFoundException('can not find word model');
     }
 
     public function setWord(Word $word): void {
@@ -64,7 +64,7 @@ class WordService
                 throw new CanNotSaveModelException('word model can not be saved. attributes: ' . implode($this->word->getAttributes()));
             }
         }
-        throw new CanNotFindModelException('can not find word model');
+        throw new ModelNotFoundException('can not find word model');
     }
 
     public function fetchOrCreateWord(): Word {

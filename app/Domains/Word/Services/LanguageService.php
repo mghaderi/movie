@@ -3,14 +3,13 @@
 namespace App\Domains\Word\Services;
 
 use App\Domains\Word\Models\Language;
-use App\Exceptions\CanNotFindModelException;
 use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\DuplicateModelException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LanguageService
 {
-    private ?Language $language;
+    public ?Language $language = null;
 
     public function setLanguage(Language $language): void {
         $this->language = $language;
@@ -26,7 +25,7 @@ class LanguageService
                     implode($this->language->getAttributes()));
             }
         }
-        throw new CanNotFindModelException('can not find language model');
+        throw new ModelNotFoundException('can not find language model');
     }
 
     public function fetchOrCreateLanguage(): Language {
@@ -45,13 +44,19 @@ class LanguageService
     }
 
     public function setLanguageName(string $name): void {
-        $this->language->name = $name;
+        if ($this->language instanceof Language) {
+            $this->language->name = $name;
+            return;
+        }
+        throw new ModelNotFoundException('can not find language model');
     }
 
     public function checkForDuplicateName(): void {
         if ($this->language instanceof Language) {
-            $oldLanguage = Language::where('name', $this->language->name)->first();
-            if (($oldLanguage instanceof Language) && ($oldLanguage->id === $this->language->id)) {
+            $oldLanguage = Language::where('name', $this->language->name)
+                ->where('id', '!=', $this->language->id)
+                ->first();
+            if ($oldLanguage instanceof Language) {
                 throw new DuplicateModelException('duplicate language model, with same name. attributes: : ' .
                     implode($oldLanguage->getAttributes()));
             }

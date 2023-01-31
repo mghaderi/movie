@@ -3,9 +3,9 @@
 namespace App\Domains\Media\Services;
 
 use App\Domains\Media\Models\Link;
-use App\Exceptions\CanNotFindModelException;
 use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\InvalidTypeException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LinkService
 {
@@ -28,7 +28,7 @@ class LinkService
             }
             throw new InvalidTypeException('link type: ' . $type . ' is invalid');
         }
-        throw new CanNotFindModelException('can not find link model');
+        throw new ModelNotFoundException('can not find link model');
     }
 
     public function setLinkAddress(string $address): void {
@@ -36,7 +36,7 @@ class LinkService
             $this->link->address = $address;
             return;
         }
-        throw new CanNotFindModelException('can not find link model');
+        throw new ModelNotFoundException('can not find link model');
     }
 
     public function setLinkExtension(string $extension): void {
@@ -44,7 +44,7 @@ class LinkService
             $this->link->extension = $extension;
             return;
         }
-        throw new CanNotFindModelException('can not find link model');
+        throw new ModelNotFoundException('can not find link model');
     }
 
     public function setLinkQuality(string $quality): void {
@@ -52,7 +52,7 @@ class LinkService
             $this->link->quality = $quality;
             return;
         }
-        throw new CanNotFindModelException('can not find link model');
+        throw new ModelNotFoundException('can not find link model');
     }
 
     public function setLink(Link $link): void {
@@ -69,7 +69,7 @@ class LinkService
                     implode($this->link->getAttributes()));
             }
         }
-        throw new CanNotFindModelException('can not find link model');
+        throw new ModelNotFoundException('can not find link model');
     }
 
     public function fetchOrCreateLink(): Link {

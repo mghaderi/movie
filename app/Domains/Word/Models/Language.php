@@ -3,7 +3,9 @@
 namespace App\Domains\Word\Models;
 
 use App\Models\Traits\IsMorph;
+use Database\Factories\word\LanguageFactory;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -13,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Collection $wordDetailSmalls
  */
 class Language extends Model {
+
+    use HasFactory;
 
     use IsMorph;
 
@@ -36,5 +40,10 @@ class Language extends Model {
             'language_id',
             'id'
         );
+    }
+
+    protected static function newFactory()
+    {
+        return LanguageFactory::new();
     }
 }

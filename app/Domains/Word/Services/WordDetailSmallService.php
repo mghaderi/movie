@@ -5,12 +5,11 @@ namespace App\Domains\Word\Services;
 use App\Domains\Word\Models\Interfaces\WordDetailInterface;
 use App\Domains\Word\Models\Language;
 use App\Domains\Word\Models\Word;
-use App\Domains\Word\Models\WordDetailBig;
 use App\Domains\Word\Models\WordDetailSmall;
 use App\Domains\Word\Services\Interfaces\WordDetailServiceInterface;
-use App\Exceptions\CanNotFindModelException;
 use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\ModelTypeException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class WordDetailSmallService implements WordDetailServiceInterface
 {
@@ -35,7 +34,7 @@ class WordDetailSmallService implements WordDetailServiceInterface
             $this->wordDetailSmall->language_id = $language->id;
             return;
         }
-        throw new CanNotFindModelException('can not find word detail small model');
+        throw new ModelNotFoundException('can not find word detail small model');
     }
 
     public function setValue(string $value): void {
@@ -43,7 +42,7 @@ class WordDetailSmallService implements WordDetailServiceInterface
             $this->wordDetailSmall->value = $value;
             return;
         }
-        throw new CanNotFindModelException('can not find word detail small model');
+        throw new ModelNotFoundException('can not find word detail small model');
     }
 
     public function setWord(Word $word): void {
@@ -51,7 +50,7 @@ class WordDetailSmallService implements WordDetailServiceInterface
             $this->wordDetailSmall->word_id = $word->id;
             return;
         }
-        throw new CanNotFindModelException('can not find word detail small model');
+        throw new ModelNotFoundException('can not find word detail small model');
     }
 
     public function saveWordDetail(): void {
@@ -64,7 +63,7 @@ class WordDetailSmallService implements WordDetailServiceInterface
                     implode($this->wordDetailSmall->getAttributes()));
             }
         }
-        throw new CanNotFindModelException('can not find word detail small model');
+        throw new ModelNotFoundException('can not find word detail small model');
     }
 
 }

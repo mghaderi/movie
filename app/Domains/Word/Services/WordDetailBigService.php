@@ -6,11 +6,10 @@ use App\Domains\Word\Models\Interfaces\WordDetailInterface;
 use App\Domains\Word\Models\Language;
 use App\Domains\Word\Models\Word;
 use App\Domains\Word\Models\WordDetailBig;
-use App\Domains\Word\Models\WordDetailSmall;
 use App\Domains\Word\Services\Interfaces\WordDetailServiceInterface;
-use App\Exceptions\CanNotFindModelException;
 use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\ModelTypeException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class WordDetailBigService implements WordDetailServiceInterface
 {
@@ -35,7 +34,7 @@ class WordDetailBigService implements WordDetailServiceInterface
             $this->wordDetailBig->language_id = $language->id;
             return;
         }
-        throw new CanNotFindModelException('can not find word detail big model');
+        throw new ModelNotFoundException('can not find word detail big model');
     }
 
     public function setValue(string $value): void {
@@ -43,7 +42,7 @@ class WordDetailBigService implements WordDetailServiceInterface
             $this->wordDetailBig->value = $value;
             return;
         }
-        throw new CanNotFindModelException('can not find word detail big model');
+        throw new ModelNotFoundException('can not find word detail big model');
     }
 
     public function setWord(Word $word): void {
@@ -51,7 +50,7 @@ class WordDetailBigService implements WordDetailServiceInterface
             $this->wordDetailBig->word_id = $word->id;
             return;
         }
-        throw new CanNotFindModelException('can not find word detail big model');
+        throw new ModelNotFoundException('can not find word detail big model');
     }
 
     public function saveWordDetail(): void {
@@ -64,6 +63,6 @@ class WordDetailBigService implements WordDetailServiceInterface
                     implode($this->wordDetailBig->getAttributes()));
             }
         }
-        throw new CanNotFindModelException('can not find word detail big model');
+        throw new ModelNotFoundException('can not find word detail big model');
     }
 }
