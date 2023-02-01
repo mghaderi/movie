@@ -7,8 +7,7 @@ use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\DuplicateModelException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class LanguageService
-{
+class LanguageService {
     public ?Language $language = null;
 
     public function setLanguage(Language $language): void {

@@ -11,9 +11,9 @@ use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\ModelTypeException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class WordDetailSmallService implements WordDetailServiceInterface
-{
-    private ?WordDetailSmall $wordDetailSmall;
+class WordDetailSmallService implements WordDetailServiceInterface {
+
+    public ?WordDetailSmall $wordDetailSmall = null;
 
     public function fetchOrCreateWordDetail(): WordDetailInterface {
         if (! empty($this->wordDetailSmall)) {
@@ -22,9 +22,10 @@ class WordDetailSmallService implements WordDetailServiceInterface
         return (new WordDetailSmall());
     }
 
-    public function setDetailWord(WordDetailInterface $wordDetail): void {
+    public function setWordDetail(WordDetailInterface $wordDetail): void {
         if ($wordDetail instanceof WordDetailSmall) {
             $this->wordDetailSmall = $wordDetail;
+            return;
         }
         throw new ModelTypeException('expected ' . WordDetailSmall::class . ', found: ' . get_class($wordDetail));
     }

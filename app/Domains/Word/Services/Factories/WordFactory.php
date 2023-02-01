@@ -24,7 +24,7 @@ class WordFactory {
             $this->wordService->saveWord();
             foreach ($wordFactoryDTOs as $wordFactoryDTO) {
                 $wordDetailService = $this->wordService->wordDetailServiceObject();
-                $wordDetailService->setDetailWord($wordDetailService->fetchOrCreateWordDetail());
+                $wordDetailService->setWordDetail($wordDetailService->fetchOrCreateWordDetail());
                 $wordDetailService->setLanguage($wordFactoryDTO->language);
                 $wordDetailService->setValue($wordFactoryDTO->value);
                 $wordDetailService->setWord($this->wordService->fetchOrCreateWord());

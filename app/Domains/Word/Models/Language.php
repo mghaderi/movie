@@ -42,8 +42,7 @@ class Language extends Model {
         );
     }
 
-    protected static function newFactory()
-    {
+    protected static function newFactory() {
         return LanguageFactory::new();
     }
 }

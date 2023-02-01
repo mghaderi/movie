@@ -10,8 +10,7 @@ use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\InvalidTypeException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class WordService
-{
+class WordService {
     private ?Word $word;
 
     private function wordDetailClasses(): array {

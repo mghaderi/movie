@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class LanguageServiceTest extends TestCase
-{
+class LanguageServiceTest extends TestCase {
     use RefreshDatabase;
 
     /** @test */
