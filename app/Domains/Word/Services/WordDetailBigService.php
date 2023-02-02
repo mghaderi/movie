@@ -30,24 +30,10 @@ class WordDetailBigService implements WordDetailServiceInterface {
         throw new ModelTypeException('expected ' . WordDetailBig::class . ', found: ' . get_class($wordDetail));
     }
 
-    public function setLanguage(Language $language): void {
+    public function setData(Language $language, string $value, Word $word): void {
         if ($this->wordDetailBig instanceof WordDetailBig) {
             $this->wordDetailBig->language_id = $language->id;
-            return;
-        }
-        throw new ModelNotFoundException('can not find word detail big model');
-    }
-
-    public function setValue(string $value): void {
-        if ($this->wordDetailBig instanceof WordDetailBig) {
             $this->wordDetailBig->value = $value;
-            return;
-        }
-        throw new ModelNotFoundException('can not find word detail big model');
-    }
-
-    public function setWord(Word $word): void {
-        if ($this->wordDetailBig instanceof WordDetailBig) {
             $this->wordDetailBig->word_id = $word->id;
             return;
         }

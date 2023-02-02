@@ -25,9 +25,11 @@ class WordFactory {
             foreach ($wordFactoryDTOs as $wordFactoryDTO) {
                 $wordDetailService = $this->wordService->wordDetailServiceObject();
                 $wordDetailService->setWordDetail($wordDetailService->fetchOrCreateWordDetail());
-                $wordDetailService->setLanguage($wordFactoryDTO->language);
-                $wordDetailService->setValue($wordFactoryDTO->value);
-                $wordDetailService->setWord($this->wordService->fetchOrCreateWord());
+                $wordDetailService->setData(
+                    $wordFactoryDTO->language,
+                    $wordFactoryDTO->value,
+                    $this->wordService->fetchOrCreateWord()
+                );
                 $wordDetailService->saveWordDetail();
             }
             DB::commit();

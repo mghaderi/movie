@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Language extends Model {
 
     use HasFactory;
-
     use IsMorph;
 
     protected $table = 'languages';

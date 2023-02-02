@@ -30,24 +30,10 @@ class WordDetailSmallService implements WordDetailServiceInterface {
         throw new ModelTypeException('expected ' . WordDetailSmall::class . ', found: ' . get_class($wordDetail));
     }
 
-    public function setLanguage(Language $language): void {
+    public function setData(Language $language, string $value, Word $word): void {
         if ($this->wordDetailSmall instanceof WordDetailSmall) {
             $this->wordDetailSmall->language_id = $language->id;
-            return;
-        }
-        throw new ModelNotFoundException('can not find word detail small model');
-    }
-
-    public function setValue(string $value): void {
-        if ($this->wordDetailSmall instanceof WordDetailSmall) {
             $this->wordDetailSmall->value = $value;
-            return;
-        }
-        throw new ModelNotFoundException('can not find word detail small model');
-    }
-
-    public function setWord(Word $word): void {
-        if ($this->wordDetailSmall instanceof WordDetailSmall) {
             $this->wordDetailSmall->word_id = $word->id;
             return;
         }

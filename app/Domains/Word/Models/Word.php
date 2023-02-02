@@ -3,7 +3,9 @@
 namespace App\Domains\Word\Models;
 
 use App\Models\Traits\IsMorph;
+use Database\Factories\word\WordFactory;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -14,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Word extends Model {
 
+    use HasFactory;
     use IsMorph;
 
     protected $table = 'words';
@@ -36,5 +39,10 @@ class Word extends Model {
             'word_id',
             'id'
         );
+    }
+
+    protected static function newFactory()
+    {
+        return WordFactory::new();
     }
 }
