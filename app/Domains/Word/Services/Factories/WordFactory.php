@@ -10,30 +10,25 @@ use Illuminate\Support\Facades\DB;
 
 class WordFactory {
 
-    public WordService $wordService;
-
-    public function __construct() {
-        $this->wordService = new WordService();
-    }
-
     public function generate(string $type, WordFactoryDTO ...$wordFactoryDTOs): Word {
+        $wordService = new WordService();
         if (! empty($wordFactoryDTOs)) {
             DB::beginTransaction();
-            $this->wordService->setWord($this->wordService->fetchOrCreateWord());
-            $this->wordService->setWordType($type);
-            $this->wordService->saveWord();
+            $wordService->setWord($wordService->fetchOrCreateWord());
+            $wordService->setWordType($type);
+            $wordService->saveWord();
             foreach ($wordFactoryDTOs as $wordFactoryDTO) {
-                $wordDetailService = $this->wordService->wordDetailServiceObject();
+                $wordDetailService = $wordService->wordDetailServiceObject();
                 $wordDetailService->setWordDetail($wordDetailService->fetchOrCreateWordDetail());
                 $wordDetailService->setData(
                     $wordFactoryDTO->language,
                     $wordFactoryDTO->value,
-                    $this->wordService->fetchOrCreateWord()
+                    $wordService->fetchOrCreateWord()
                 );
                 $wordDetailService->saveWordDetail();
             }
             DB::commit();
-            return $this->wordService->fetchOrCreateWord();
+            return $wordService->fetchOrCreateWord();
         }
         throw new CanNotGenerateWordException('error in generating word');
     }
