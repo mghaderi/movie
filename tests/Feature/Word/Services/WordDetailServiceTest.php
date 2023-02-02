@@ -136,4 +136,40 @@ class WordDetailServiceTest extends TestCase {
         }
     }
 
+    /** @test */
+    public function save_word_detail_big_test() {
+        $wordDetailBigService = new WordDetailBigService();
+        try {
+            $wordDetailBigService->saveWordDetail();
+            $this->fail();
+        } catch (\Exception $exception) {
+            $this->assertTrue($exception instanceof ModelNotFoundException);
+        }
+        $wordDetailBigService->setWordDetail(new WordDetailBig());
+        try {
+            $wordDetailBigService->saveWordDetail();
+            $this->assertTrue(! empty($wordDetailBigService->wordDetailBig->id));
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+    }
+
+    /** @test */
+    public function save_word_detail_small_test() {
+        $wordDetailSmallService = new WordDetailSmallService();
+        try {
+            $wordDetailSmallService->saveWordDetail();
+            $this->fail();
+        } catch (\Exception $exception) {
+            $this->assertTrue($exception instanceof ModelNotFoundException);
+        }
+        $wordDetailSmallService->setWordDetail(new WordDetailSmall());
+        try {
+            $wordDetailSmallService->saveWordDetail();
+            $this->assertTrue(! empty($wordDetailSmallService->wordDetailSmall->id));
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+    }
+
 }
