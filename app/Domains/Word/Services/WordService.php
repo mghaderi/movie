@@ -11,9 +11,10 @@ use App\Exceptions\InvalidTypeException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class WordService {
-    private ?Word $word;
 
-    private function wordDetailClasses(): array {
+    public ?Word $word = null;
+
+    public function wordDetailClasses(): array {
         return [
             'small' => [
                 'class' => WordDetailSmall::class,
@@ -32,7 +33,7 @@ class WordService {
             if (empty($className)) {
                 throw new ModelNotFoundException('can not find word service model for type: ' . $this->word->type);
             }
-            return new $className();
+            return (new $className());
         }
         throw new ModelNotFoundException('can not find word model');
     }
