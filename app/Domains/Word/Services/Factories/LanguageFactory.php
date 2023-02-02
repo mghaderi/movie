@@ -7,22 +7,17 @@ use App\Domains\Word\Services\LanguageService;
 use App\Exceptions\DuplicateModelException;
 
 class LanguageFactory {
-
-    public LanguageService $languageService;
-
-    public function __construct() {
-        $this->languageService = new LanguageService();
-    }
-
+    
     public function generate(string $name): Language {
-        $this->languageService->setLanguage($this->languageService->fetchOrCreateLanguage());
-        $this->languageService->setLanguageName($name);
+        $languageService = new LanguageService();
+        $languageService->setLanguage($languageService->fetchOrCreateLanguage());
+        $languageService->setLanguageName($name);
         try {
-            $this->languageService->checkForDuplicateName();
+            $languageService->checkForDuplicateName();
         } catch (DuplicateModelException $exception) {
-            return $this->languageService->fetchLanguage($name);
+            return $languageService->fetchLanguage($name);
         }
-        $this->languageService->saveLanguage();
-        return $this->languageService->fetchOrCreateLanguage();
+        $languageService->saveLanguage();
+        return $languageService->fetchOrCreateLanguage();
     }
 }
