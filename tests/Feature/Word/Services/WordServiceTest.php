@@ -16,14 +16,28 @@ class WordServiceTest extends TestCase {
     use RefreshDatabase;
 
     /** @test */
+    public function word_types_test() {
+        $wordService = new WordService();
+        $response = $wordService->wordTypes();
+        $this->assertTrue(! empty($response[WordService::WORD_TYPE_BIG]));
+        $this->assertTrue($response[WordService::WORD_TYPE_BIG] === WordService::WORD_TYPE_BIG);
+        $this->assertTrue(!empty($response[WordService::WORD_TYPE_SMALL]));
+        $this->assertTrue($response[WordService::WORD_TYPE_SMALL] === WordService::WORD_TYPE_SMALL);
+    }
+
+    /** @test */
     public function word_detail_classes_test() {
         $wordService = new WordService();
         $response = $wordService->wordDetailClasses();
         $this->assertIsArray($response);
-        foreach ($response as $value) {
+        foreach ($response as $key => $value) {
             $this->assertIsArray($value);
             $this->assertArrayHasKey('class', $value);
             $this->assertArrayHasKey('service', $value);
+            $this->assertTrue(
+                ($key === WordService::WORD_TYPE_SMALL) ||
+                ($key === WordService::WORD_TYPE_BIG)
+            );
         }
     }
 
@@ -50,7 +64,7 @@ class WordServiceTest extends TestCase {
         } catch (\Exception $exception) {
             $this->assertTrue($exception instanceof ModelNotFoundException);
         }
-        $wordService->word->type = 'small';
+        $wordService->word->type = WordService::WORD_TYPE_SMALL;
         try {
             $this->assertTrue(
                 $wordService->wordDetailServiceObject()
@@ -76,7 +90,7 @@ class WordServiceTest extends TestCase {
     public function set_word_type_test() {
         $wordService = new WordService();
         try {
-            $wordService->setWordType('small');
+            $wordService->setWordType(WordService::WORD_TYPE_SMALL);
             $this->fail();
         } catch(\Exception $exception) {
             $this->assertTrue($exception instanceof ModelNotFoundException);
@@ -89,8 +103,8 @@ class WordServiceTest extends TestCase {
             $this->assertTrue($exception instanceof InvalidTypeException);
         }
         try {
-            $wordService->setWordType('small');
-            $this->assertTrue($wordService->word->type === 'small');
+            $wordService->setWordType(WordService::WORD_TYPE_SMALL);
+            $this->assertTrue($wordService->word->type === WordService::WORD_TYPE_SMALL);
         } catch (\Exception $exception) {
             $this->fail();
         }

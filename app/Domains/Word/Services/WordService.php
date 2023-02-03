@@ -14,13 +14,24 @@ class WordService {
 
     public ?Word $word = null;
 
+    public const WORD_TYPE_BIG = 'big';
+    public const WORD_TYPE_SMALL = 'small';
+
+    /** @test */
+    public function wordTypes(): array {
+        return [
+            self::WORD_TYPE_SMALL => self::WORD_TYPE_SMALL,
+            self::WORD_TYPE_BIG => self::WORD_TYPE_BIG,
+        ];
+    }
+
     public function wordDetailClasses(): array {
         return [
-            'small' => [
+            self::WORD_TYPE_SMALL => [
                 'class' => WordDetailSmall::class,
                 'service' => WordDetailSmallService::class,
             ],
-            'big' => [
+            self::WORD_TYPE_BIG => [
                 'class' => WordDetailBig::class,
                 'service' => WordDetailBigService::class,
             ]
