@@ -21,8 +21,7 @@ class PersonDetailService {
 
     public ?PersonDetail $personDetail = null;
 
-    public function __construct(?PersonDetail $personDetail = null)
-    {
+    public function __construct(?PersonDetail $personDetail = null) {
         $this->personDetail = $personDetail;
     }
 
@@ -40,7 +39,7 @@ class PersonDetailService {
         }
         throw new ModelNotFoundException('model person detail not found');
     }
-    
+
     public function setRelation(Model $relation, string $type): void {
         if ($this->personDetail instanceof PersonDetail) {
             $personDetailClass = $this->personDetailTypesRelations()[$type] ?? '';
