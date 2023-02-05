@@ -9,20 +9,22 @@ use App\Models\Traits\HasMorph;
 use App\Services\PossibleMorphService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * @property int|null $first_name_word_id
- * @property int|null $last_name_word_id
- * @property int|null $full_name_word_id
- * @property Word|null $firstName
- * @property Word|null $lastName
- * @property Word|null $fullName
+ * @property int|null $person_id
+ * @property string|null $type
+ * @property string|null $relation_type
+ * @property int|null $relation_id
+ * @property string|null $created_at
+ * @property string|null $updated_at
+ * @property Person|null $person
  */
 class PersonDetail extends Model implements MorphInterface {
 
     use HasMorph;
 
-    protected $table = 'persons';
+    protected $table = 'person_details';
 
     protected $fillable = [
         'person_id',
@@ -38,6 +40,10 @@ class PersonDetail extends Model implements MorphInterface {
             'id',
             'fk-person_details-person_id'
         );
+    }
+
+    public function relation(): MorphTo {
+        return $this->morphTo(__FUNCTION__, 'relation_type', 'relation_id', 'id');
     }
 
     public function setPossibleMorphClasses(PossibleMorphService $possibleMorphService): PossibleMorphService {
