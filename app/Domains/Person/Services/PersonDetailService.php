@@ -6,6 +6,7 @@ use App\Domains\Media\Models\Link;
 use App\Domains\Person\Models\Person;
 use App\Domains\Person\Models\PersonDetail;
 use App\Domains\Word\Models\Word;
+use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\InvalidTypeException;
 use App\Exceptions\ModelTypeException;
 use Illuminate\Database\Eloquent\Model;
@@ -21,8 +22,30 @@ class PersonDetailService {
 
     public ?PersonDetail $personDetail = null;
 
-    public function __construct(?PersonDetail $personDetail = null) {
+    public function setPersonDetail(PersonDetail $personDetail) {
         $this->personDetail = $personDetail;
+    }
+
+    public function savePersonDetail(): void {
+        if ($this->personDetail instanceof PersonDetail) {
+            try {
+                $this->personDetail->saveOrFail();
+                return;
+            } catch (\Exception|\Throwable $exception) {
+                throw new CanNotSaveModelException(
+                    'person detail model can not be saved. attributes: ' .
+                    implode(',', $this->personDetail->getAttributes())
+                );
+            }
+        }
+        throw new ModelNotFoundException('model person detail not found');
+    }
+
+    public function fetchOrCreatePersonDetail(): PersonDetail {
+        if ($this->personDetail instanceof PersonDetail) {
+            return $this->personDetail;
+        }
+        return (new PersonDetail());
     }
 
     public function personDetailTypesRelations(): array {
