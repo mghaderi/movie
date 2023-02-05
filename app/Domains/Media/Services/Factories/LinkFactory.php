@@ -7,19 +7,13 @@ use App\Domains\Media\Services\LinkService;
 
 class LinkFactory
 {
-    public LinkService $linkService;
-
-    public function __construct()
-    {
-        $this->linkService = new LinkService();
-    }
-
     public function generate(string $type, string $address, string $extension, string $quality): Link
     {
-        $this->linkService->setLink($this->linkService->fetchOrCreateLink());
-        $this->linkService->setLinkType($type);
-        $this->linkService->setLinkData($address, $extension, $quality);
-        $this->linkService->saveLink();
-        return $this->linkService->fetchOrCreateLink();
+        $linkService = new LinkService();
+        $linkService->setLink($linkService->fetchOrCreateLink());
+        $linkService->setLinkType($type);
+        $linkService->setLinkData($address, $extension, $quality);
+        $linkService->saveLink();
+        return $linkService->fetchOrCreateLink();
     }
 }
