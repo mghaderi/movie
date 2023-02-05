@@ -43,7 +43,11 @@ class PersonDetail extends Model implements MorphInterface {
     }
 
     public function relation(): MorphTo {
-        return $this->morphTo(__FUNCTION__, 'relation_type', 'relation_id', 'id');
+        return $this->morphTo(
+            __FUNCTION__,
+            'relation_type',
+            'relation_id'
+        );
     }
 
     public function setPossibleMorphClasses(PossibleMorphService $possibleMorphService): PossibleMorphService {
