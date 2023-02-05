@@ -47,7 +47,7 @@ class WordDetailSmallService implements WordDetailServiceInterface {
                 return;
             } catch (\Exception|\Throwable $exception) {
                 throw new CanNotSaveModelException('word detail small model can not be saved. attributes: ' .
-                    implode($this->wordDetailSmall->getAttributes()));
+                    implode(',', $this->wordDetailSmall->getAttributes()));
             }
         }
         throw new ModelNotFoundException('can not find word detail small model');

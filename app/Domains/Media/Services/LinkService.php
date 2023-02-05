@@ -7,14 +7,17 @@ use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\InvalidTypeException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class LinkService
-{
-    private ?Link $link;
+class LinkService {
+
+    public const TYPE_MOVIE = 'movie';
+    public const TYPE_IMAGE = 'image';
+
+    public ?Link $link = null;
 
     public function linkTypes(): array {
         return [
-            'movie',
-            'image',
+            self::TYPE_MOVIE => self::TYPE_MOVIE,
+            self::TYPE_IMAGE => self::TYPE_IMAGE,
         ];
     }
 
@@ -31,24 +34,10 @@ class LinkService
         throw new ModelNotFoundException('can not find link model');
     }
 
-    public function setLinkAddress(string $address): void {
+    public function setLinkData(string $address, string $extension, string $quality): void {
         if ($this->link instanceof Link) {
             $this->link->address = $address;
-            return;
-        }
-        throw new ModelNotFoundException('can not find link model');
-    }
-
-    public function setLinkExtension(string $extension): void {
-        if ($this->link instanceof Link) {
             $this->link->extension = $extension;
-            return;
-        }
-        throw new ModelNotFoundException('can not find link model');
-    }
-
-    public function setLinkQuality(string $quality): void {
-        if ($this->link instanceof Link) {
             $this->link->quality = $quality;
             return;
         }
@@ -59,14 +48,14 @@ class LinkService
         $this->link = $link;
     }
 
-    public function saveLink() {
+    public function saveLink(): void {
         if ($this->link instanceof Link) {
             try {
                 $this->link->saveOrFail();
                 return;
             } catch (\Exception|\Throwable $exception) {
                 throw new CanNotSaveModelException('link model can not be saved. attributes: ' .
-                    implode($this->link->getAttributes()));
+                    implode(',', $this->link->getAttributes()));
             }
         }
         throw new ModelNotFoundException('can not find link model');

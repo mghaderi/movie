@@ -18,9 +18,7 @@ class LinkFactory
     {
         $this->linkService->setLink($this->linkService->fetchOrCreateLink());
         $this->linkService->setLinkType($type);
-        $this->linkService->setLinkAddress($address);
-        $this->linkService->setLinkExtension($extension);
-        $this->linkService->setLinkQuality($quality);
+        $this->linkService->setLinkData($address, $extension, $quality);
         $this->linkService->saveLink();
         return $this->linkService->fetchOrCreateLink();
     }

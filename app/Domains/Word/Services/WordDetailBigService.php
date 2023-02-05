@@ -47,7 +47,7 @@ class WordDetailBigService implements WordDetailServiceInterface {
                 return;
             } catch (\Exception|\Throwable $exception) {
                 throw new CanNotSaveModelException('word detail big model can not be saved. attributes: ' .
-                    implode($this->wordDetailBig->getAttributes()));
+                    implode(',', $this->wordDetailBig->getAttributes()));
             }
         }
         throw new ModelNotFoundException('can not find word detail big model');

@@ -72,7 +72,7 @@ class WordService {
                 $this->word->saveOrFail();
                 return;
             } catch (\Exception|\Throwable $exception) {
-                throw new CanNotSaveModelException('word model can not be saved. attributes: ' . implode($this->word->getAttributes()));
+                throw new CanNotSaveModelException('word model can not be saved. attributes: ' . implode(',', $this->word->getAttributes()));
             }
         }
         throw new ModelNotFoundException('can not find word model');

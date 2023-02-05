@@ -21,7 +21,7 @@ class LanguageService {
                 return;
             } catch (\Exception|\Throwable $exception) {
                 throw new CanNotSaveModelException('language model can not be saved. attributes: ' .
-                    implode($this->language->getAttributes()));
+                    implode(',', $this->language->getAttributes()));
             }
         }
         throw new ModelNotFoundException('can not find language model');
@@ -57,7 +57,7 @@ class LanguageService {
                 ->first();
             if ($oldLanguage instanceof Language) {
                 throw new DuplicateModelException('duplicate language model, with same name. attributes: : ' .
-                    implode($oldLanguage->getAttributes()));
+                    implode(',', $oldLanguage->getAttributes()));
             }
             return;
         }

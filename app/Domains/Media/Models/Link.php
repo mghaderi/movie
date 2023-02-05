@@ -3,6 +3,8 @@
 namespace App\Domains\Media\Models;
 
 use App\Models\Traits\IsMorph;
+use Database\Factories\media\LinkFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -14,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 class Link extends Model {
 
     use IsMorph;
+    use HasFactory;
 
     protected $table = 'links';
 
@@ -23,4 +26,8 @@ class Link extends Model {
         'address',
         'quality'
     ];
+
+    protected static function newFactory() {
+        return LinkFactory::new();
+    }
 }

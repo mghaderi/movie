@@ -41,8 +41,7 @@ class Word extends Model {
         );
     }
 
-    protected static function newFactory()
-    {
+    protected static function newFactory() {
         return WordFactory::new();
     }
 }
