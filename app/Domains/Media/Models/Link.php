@@ -17,8 +17,8 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property string|null $extension
  * @property string|null $address
  * @property string|null $quality
- * @property Collection|null $personDetails
- * @property Collection|null $persons
+ * @property Collection $personDetails
+ * @property Collection $persons
  */
 class Link extends Model {
 

@@ -28,12 +28,21 @@ class PersonDetailService {
         ];
     }
 
-//    public function setPerson(Person $person) {
+    public function setPerson(Person $person): void {
+        if ($this->personDetail instanceof PersonDetail) {
+            $this->personDetail->person_id = $person->id;
+            return;
+        }
+        throw new ModelNotFoundException('model person detail not found');
+    }
+
+    /** @todo  */
+//    public function setType(string $type): void {
 //        if ($this->personDetail instanceof PersonDetail) {
-//            $this->personDetail->person_id
+//            $this->personDetail->person_id = $person->id;
+//            return;
 //        }
 //        throw new ModelNotFoundException('model person detail not found');
 //    }
-
 
 }
