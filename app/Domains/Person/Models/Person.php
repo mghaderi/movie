@@ -4,7 +4,10 @@ namespace App\Domains\Person\Models;
 
 use App\Domains\Media\Models\Link;
 use App\Domains\Word\Models\Word;
+use Database\Factories\person\PersonFactory;
+use Database\Factories\word\WordFactory;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,6 +24,8 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property Collection $links
  */
 class Person extends Model {
+
+    use HasFactory;
 
     protected $table = 'persons';
 
@@ -79,5 +84,9 @@ class Person extends Model {
             'relation',
             'person_details'
         );
+    }
+
+    protected static function newFactory() {
+        return PersonFactory::new();
     }
 }

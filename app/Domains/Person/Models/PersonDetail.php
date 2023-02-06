@@ -7,6 +7,8 @@ use App\Domains\Word\Models\Word;
 use App\Models\Interfaces\MorphInterface;
 use App\Models\Traits\HasMorph;
 use App\Services\PossibleMorphService;
+use Database\Factories\person\PersonDetailFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -23,6 +25,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class PersonDetail extends Model implements MorphInterface {
 
     use HasMorph;
+    use HasFactory;
 
     protected $table = 'person_details';
 
@@ -56,5 +59,9 @@ class PersonDetail extends Model implements MorphInterface {
             Link::class
         );
         return $possibleMorphService;
+    }
+
+    protected static function newFactory() {
+        return PersonDetailFactory::new();
     }
 }
