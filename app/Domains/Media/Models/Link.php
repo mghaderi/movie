@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property string|null $quality
  * @property Collection $personDetails
  * @property Collection $persons
+ * @property Collection $mediaDetailRelations
+ * @property Collection $mediaDetails
  */
 class Link extends Model {
 
@@ -48,6 +50,23 @@ class Link extends Model {
             Person::class,
             'relation',
             'person_details'
+        );
+    }
+
+    public function mediaDetailRelations(): MorphMany {
+        return $this->morphMany(
+            MediaDetailRelation::class,
+            'relation',
+            'relation_type',
+            'relation_id'
+        );
+    }
+
+    public function mediaDetails(): MorphToMany {
+        return $this->morphToMany(
+            MediaDetail::class,
+            'relation',
+            'media_detail_relations'
         );
     }
 

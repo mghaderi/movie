@@ -2,6 +2,8 @@
 
 namespace App\Domains\Word\Models;
 
+use App\Domains\Media\Models\MediaDetail;
+use App\Domains\Media\Models\MediaDetailRelation;
 use App\Domains\Person\Models\Person;
 use App\Domains\Person\Models\PersonDetail;
 use App\Models\Traits\IsMorph;
@@ -19,6 +21,8 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property Collection $wordDetailSmalls
  * @property Collection $personDetails
  * @property Collection $persons
+ * @property Collection $mediaDetailRelations
+ * @property Collection $mediaDetails
  */
 class Word extends Model {
 
@@ -61,6 +65,23 @@ class Word extends Model {
             Person::class,
             'relation',
             'person_details'
+        );
+    }
+
+    public function mediaDetailRelations(): MorphMany {
+        return $this->morphMany(
+            MediaDetailRelation::class,
+            'relation',
+            'relation_type',
+            'relation_id',
+        );
+    }
+
+    public function mediaDetails(): MorphToMany {
+        return $this->morphToMany(
+            MediaDetail::class,
+            'relation',
+            'media_detail_relations'
         );
     }
 

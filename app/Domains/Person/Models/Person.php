@@ -5,7 +5,6 @@ namespace App\Domains\Person\Models;
 use App\Domains\Media\Models\Link;
 use App\Domains\Word\Models\Word;
 use Database\Factories\person\PersonFactory;
-use Database\Factories\word\WordFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

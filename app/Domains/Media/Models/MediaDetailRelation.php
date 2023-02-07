@@ -14,14 +14,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property int|null $media_detail_id
  * @property string|null $relation_type
  * @property int|null $relation_id
  * @property MediaDetail|null $mediaDetail
- * @property Collection|null $mediaDetailRelationsData
- * @property Collection|null $mediaDetailData
+ * @property Collection $mediaDetailRelationsData
+ * @property Collection $mediaDetailData
+ * @property Collection $relation
  */
 class MediaDetailRelation extends Model implements MorphInterface {
 
@@ -59,6 +61,14 @@ class MediaDetailRelation extends Model implements MorphInterface {
             'media_detail_relations_data',
             'media_detail_relation_id',
             'media_detail_datum_id',
+        );
+    }
+
+    public function relation(): MorphTo {
+        return $this->morphTo(
+            __FUNCTION__,
+            'relation_type',
+            'relation_id'
         );
     }
 
