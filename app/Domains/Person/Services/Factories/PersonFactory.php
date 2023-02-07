@@ -2,7 +2,6 @@
 
 namespace App\Domains\Person\Services\Factories;
 
-use App\Domains\Person\Exceptions\Factories\CanNotGeneratePersonException;
 use App\Domains\Person\Models\Person;
 use App\Domains\Person\Services\Factories\DTOs\PersonFactoryDTO;
 use App\Domains\Person\Services\PersonDetailService;
