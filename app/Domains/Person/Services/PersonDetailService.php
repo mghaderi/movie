@@ -7,7 +7,6 @@ use App\Domains\Person\Models\Person;
 use App\Domains\Person\Models\PersonDetail;
 use App\Domains\Word\Models\Word;
 use App\Exceptions\CanNotSaveModelException;
-use App\Exceptions\InvalidTypeException;
 use App\Exceptions\ModelTypeException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

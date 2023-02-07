@@ -2,13 +2,9 @@
 
 namespace App\Domains\Person\Services;
 
-use App\Domains\Media\Models\Link;
 use App\Domains\Person\Models\Person;
-use App\Domains\Person\Models\PersonDetail;
 use App\Domains\Word\Models\Word;
 use App\Exceptions\CanNotSaveModelException;
-use App\Exceptions\ModelTypeException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
