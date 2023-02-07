@@ -17,11 +17,12 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property int|null $first_name_word_id
  * @property int|null $last_name_word_id
  * @property int|null $full_name_word_id
- * @property Word|null $firstName
- * @property Word|null $lastName
- * @property Word|null $fullName
+ * @property Word|null $firstNameWord
+ * @property Word|null $lastNameWord
+ * @property Word|null $fullNameWord
  * @property Collection $words
  * @property Collection $links
+ * @property Collection $personDetails
  */
 class Person extends Model {
 

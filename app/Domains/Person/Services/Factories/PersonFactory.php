@@ -10,17 +10,17 @@ use App\Domains\Person\Services\PersonService;
 use App\Domains\Word\Models\Word;
 use Illuminate\Support\Facades\DB;
 
-class PersonFactory
-{
+class PersonFactory {
+
     public function generate(Word $firstName, Word $lastName, Word $fullName, PersonFactoryDTO ...$personFactoryDTOs): Person {
+        DB::beginTransaction();
+        $personService = new PersonService();
+        $personService->setPerson($personService->fetchOrCreatePerson());
+        $personService->setFirstNameWord($firstName);
+        $personService->setLastNameWord($lastName);
+        $personService->setFullNameWord($fullName);
+        $personService->savePerson();
         if (! empty($personFactoryDTOs)) {
-            DB::beginTransaction();
-            $personService = new PersonService();
-            $personService->setPerson($personService->fetchOrCreatePerson());
-            $personService->setFirstNameWord($firstName);
-            $personService->setLastNameWord($lastName);
-            $personService->setFullNameWord($fullName);
-            $personService->savePerson();
             foreach ($personFactoryDTOs as $personFactoryDTO) {
                 $personDetailService = new PersonDetailService();
                 $personDetailService->setPersonDetail($personDetailService->fetchOrCreatePersonDetail());
@@ -28,8 +28,8 @@ class PersonFactory
                 $personDetailService->setPerson($personService->fetchOrCreatePerson());
                 $personDetailService->savePersonDetail();
             }
-            DB::commit();
         }
-        throw new CanNotGeneratePersonException('error in generating person');
+        DB::commit();
+        return $personService->fetchOrCreatePerson();
     }
 }
