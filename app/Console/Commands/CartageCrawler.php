@@ -42,7 +42,7 @@ class CartageCrawler extends Command
         $moviesData = [];
         $movies = $this->sendRequest(
             'get',
-            'https://mymoviecottage.sbs/wp-json/wp/v2/search?page=1&per_page=100',
+            'https://moviecottage.icu/wp-json/wp/v2/search?page=1&per_page=100',
             [], [] , 0
         )->json();
         foreach($movies as $movie) {
@@ -65,7 +65,7 @@ class CartageCrawler extends Command
         $cookies = $this->fetchCookie();
         $response = $this->sendRequest(
             'get',
-            'https://mymoviecottage.sbs/playonline/'. $movieId .'/',
+            'https://moviecottage.icu/playonline/'. $movieId .'/',
             [], $cookies, 0
         );
         $dom = new DOMDocument();
@@ -93,7 +93,7 @@ class CartageCrawler extends Command
         if ($hasSource === false) {
             $season = 1;
             $episode = 1;
-            $url = 'https://mymoviecottage.sbs/playonline/' 
+            $url = 'https://moviecottage.icu/playonline/'
                 . $movieId .'/' . '?se=' . $season . '&ep=' . $episode;
             $serialSources = $this->fetchSerialLinks($url, $cookies);
             while (!empty($serialSources)) {
@@ -104,13 +104,13 @@ class CartageCrawler extends Command
                         'links' => $serialSources
                     ];
                     $episode = $episode + 1;
-                    $url = 'https://mymoviecottage.sbs/playonline/' 
+                    $url = 'https://moviecottage.icu/playonline/'
                         . $movieId .'/' . '?se=' . $season . '&ep=' . $episode;
                     $serialSources = $this->fetchSerialLinks($url, $cookies);
                 }
                 $season = $season + 1;
                 $episode = 1;
-                $url = 'https://mymoviecottage.sbs/playonline/' 
+                $url = 'https://moviecottage.icu/playonline/'
                     . $movieId .'/' . '?se=' . $season . '&ep=' . $episode;
                 $serialSources = $this->fetchSerialLinks($url, $cookies);
             }
@@ -145,7 +145,7 @@ class CartageCrawler extends Command
 
     public function fetchCookie()
     {
-        $response = $this->sendRequest('get', 'https://mymoviecottage.sbs/account-login/', [], [], 0);
+        $response = $this->sendRequest('get', 'https://moviecottage.icu/account-login/', [], [], 0);
         $dom = new DOMDocument();
         libxml_use_internal_errors(true);
         $dom->loadHTML($response->body());
@@ -155,12 +155,12 @@ class CartageCrawler extends Command
         $security = $node->getAttribute('value');
         $response = $this->sendRequest(
             'post',
-            'https://mymoviecottage.sbs/wp-admin/admin-ajax.php',
+            'https://moviecottage.icu/wp-admin/admin-ajax.php',
             [
                 'action' => 'ajaxLoginWPF',
                 'username' => 'mohamadmam',
                 'password' => '1qaz@WSX',
-                'security' => $security, 
+                'security' => $security,
             ], [] , 0
         );
         $result = [];
@@ -248,12 +248,12 @@ class CartageCrawler extends Command
             'other' => $response['movie_data'] ?? ''
         ];
     }
-    
+
     public function elementToObject($element, $result = []) {
         if (isset($element->tagName)) {
             $obj = ['tag' => $element->tagName];
         }
-        
+
         if (isset($element->attributes)) {
             foreach ($element->attributes as $attribute) {
                 if (strpos($attribute->value, '-rate-value') !== false) {
@@ -296,7 +296,7 @@ class CartageCrawler extends Command
         return [
             'obj' => (isset($obj)) ? $obj : null,
             'result' => $result
-        ];    
+        ];
     }
 
     public function sendRequest($method , $url, $data = [], $cookies = [], $counter = 0) {
@@ -316,7 +316,7 @@ class CartageCrawler extends Command
                 return Http::asForm()->post($url, $data);
             } elseif ($method == 'get') {
                 if (! empty($cookies)) {
-                    return Http::withCookies($cookies, 'mymoviecottage.sbs')
+                    return Http::withCookies($cookies, 'moviecottage.icu')
                         ->get($url);
                 } else {
                     return Http::get($url);
