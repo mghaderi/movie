@@ -8,7 +8,7 @@ use App\Exceptions\CanNotSaveModelException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MediaDetailDatumService {
-    public ?MediaDetailDatum $mediaDetailDatum;
+    public ?MediaDetailDatum $mediaDetailDatum = null;
 
     public function setMediaDetailDatum(MediaDetailDatum $mediaDetailDatum): void {
         $this->mediaDetailDatum = $mediaDetailDatum;

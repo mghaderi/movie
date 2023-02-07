@@ -2,16 +2,20 @@
 
 namespace App\Domains\Media\Models;
 
+use Database\Factories\media\MediaDetailRelationDatumFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int|null $media_detail_data_id
- * @property int|null $media_detail_relations_id
+ * @property int|null $media_detail_datum_id
+ * @property int|null $media_detail_relation_id
  * @property MediaDetailDatum|null $mediaDetailDatum
  * @property MediaDetailRelation|null $mediaDetailRelation
  */
 class MediaDetailRelationDatum extends Model {
+
+    use HasFactory;
 
     protected $table = 'media_detail_relations_data';
 
@@ -36,5 +40,9 @@ class MediaDetailRelationDatum extends Model {
             'id',
             'fk-media_detail_relations_data-media_detail_relation_id'
         );
+    }
+
+    protected static function newFactory() {
+        return MediaDetailRelationDatumFactory::new();
     }
 }

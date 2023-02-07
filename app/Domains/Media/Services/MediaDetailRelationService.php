@@ -2,19 +2,15 @@
 
 namespace App\Domains\Media\Services;
 
-use App\Domains\Media\Models\Link;
 use App\Domains\Media\Models\MediaDetail;
-use App\Domains\Media\Models\MediaDetailDatum;
 use App\Domains\Media\Models\MediaDetailRelation;
-use App\Domains\Person\Models\PersonDetail;
-use App\Domains\Word\Models\Word;
 use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\ModelTypeException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MediaDetailRelationService {
-    public ?MediaDetailRelation $mediaDetailRelation;
+    public ?MediaDetailRelation $mediaDetailRelation = null;
 
     public function setMediaDetailRelation(MediaDetailRelation $mediaDetailRelation): void {
         $this->mediaDetailRelation = $mediaDetailRelation;
