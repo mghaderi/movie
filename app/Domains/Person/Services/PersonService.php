@@ -5,6 +5,7 @@ namespace App\Domains\Person\Services;
 use App\Domains\Person\Models\Person;
 use App\Domains\Word\Models\Word;
 use App\Exceptions\CanNotSaveModelException;
+use App\Exceptions\DuplicateModelException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
@@ -59,6 +60,29 @@ class PersonService {
             return;
         }
         throw new ModelNotFoundException('model person not found');
+    }
+
+    public function checkForDuplicateFullNameWord(): void {
+        if ($this->person instanceof Person) {
+            $person = Person::where('full_name_word_id', $this->person->full_name_word_id)
+                ->where()
+                ->first();
+            if (! empty($person)) {
+                throw new DuplicateModelException('person model with same full name word id:' .
+                    $this->fetchOrCreatePerson()->full_name_word_id . 'already existed'
+                );
+            }
+            return;
+        }
+        throw new ModelNotFoundException('model person not found');
+    }
+
+    public function fetchPersonWithFullNameWord(Word $fullNameWord): Person {
+        $person = Person::where('full_name_word_id', $fullNameWord->id)->first();
+        if (empty($person)) {
+            throw new ModelNotFoundException('model person not found');
+        }
+        return $person;
     }
 
 

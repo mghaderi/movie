@@ -5,6 +5,7 @@ namespace Tests\Feature\Person\Services;
 use App\Domains\Person\Models\Person;
 use App\Domains\Person\Services\PersonService;
 use App\Domains\Word\Models\Word;
+use App\Exceptions\DuplicateModelException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -102,6 +103,46 @@ class PersonServiceTest extends TestCase {
         } catch (\Exception $exception) {
             $this->fail();
         }
+    }
+
+    /** @test */
+    public function check_for_duplicate_full_name_test() {
+        $personService = new PersonService();
+        $word = Word::factory()->create();
+        $person = Person::factory()->create(['full_name_word_id' => $word->id]);
+        $personService->setPerson($person);
+        try {
+            $personService->checkForDuplicateFullNameWord();
+        } catch (DuplicateModelException $exception) {
+            $this->fail();
+        }
+        $person2 = new Person(['full_name_word_id' => $word->id]);
+        $personService->setPerson($person2);
+        try {
+            $personService->checkForDuplicateFullNameWord();
+            $this->fail();
+        } catch (\Exception $exception) {
+            $this->assertTrue($exception instanceof DuplicateModelException);
+        }
+    }
+
+    /** @test */
+    public function fetch_person_with_full_name_word_test() {
+        $personService = new PersonService();
+        try {
+            $personService->fetchPersonWithFullNameWord(new Word());
+            $this->fail();
+        } catch (\Exception $exception) {
+            $this->assertTrue($exception instanceof ModelNotFoundException);
+        }
+        $word = Word::factory()->create();
+        $person = Person::factory()->create(['full_name_word_id' => $word->id]);;
+        try {
+            $personService->fetchPersonWithFullNameWord($person);
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+
     }
 
 }
