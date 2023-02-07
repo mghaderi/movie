@@ -3,10 +3,13 @@
 namespace App\Domains\Media\Models;
 
 use App\Domains\Word\Models\Language;
+use App\Domains\Word\Models\Word;
 use App\Models\Interfaces\MorphInterface;
 use App\Models\Traits\HasMorph;
 use App\Services\PossibleMorphService;
+use Database\Factories\media\MediaDetailRelationFactory;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -23,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class MediaDetailRelation extends Model implements MorphInterface {
 
     use HasMorph;
+    use HasFactory;
 
     protected $table = 'media_detail_relations';
 
@@ -60,8 +64,14 @@ class MediaDetailRelation extends Model implements MorphInterface {
 
     public function setPossibleMorphClasses(PossibleMorphService $possibleMorphService): PossibleMorphService {
         $possibleMorphService->setPossibleMorphs(
-            Language::class
+            Language::class,
+            Word::class,
+            Link::class,
         );
         return $possibleMorphService;
+    }
+
+    protected static function newFactory() {
+        return MediaDetailRelationFactory::new();
     }
 }

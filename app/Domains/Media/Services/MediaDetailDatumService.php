@@ -21,7 +21,7 @@ class MediaDetailDatumService {
                 return;
             } catch (\Exception|\Throwable $exception) {
                 throw new CanNotSaveModelException('media detail datum model can not be saved. attributes: ' .
-                    implode(',', $this->person->getAttributes()));
+                    implode(',', $this->mediaDetailDatum->getAttributes()));
             }
         }
         throw new ModelNotFoundException('model media detail datum not found');
