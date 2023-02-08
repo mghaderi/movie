@@ -64,9 +64,11 @@ class PersonService {
 
     public function checkForDuplicateFullNameWord(): void {
         if ($this->person instanceof Person) {
-            $person = Person::where('full_name_word_id', $this->person->full_name_word_id)
-                ->where()
-                ->first();
+            $person = Person::where('full_name_word_id', $this->person->full_name_word_id);
+            if (! empty($this->person->id)) {
+                $person->where('full_name_word_id', '!=', $this->person->full_name_word_id);
+            }
+            $person = $person->first();
             if (! empty($person)) {
                 throw new DuplicateModelException('person model with same full name word id:' .
                     $this->fetchOrCreatePerson()->full_name_word_id . 'already existed'
@@ -78,6 +80,9 @@ class PersonService {
     }
 
     public function fetchPersonWithFullNameWord(Word $fullNameWord): Person {
+        if (empty($fullNameWord->id)) {
+            throw new ModelNotFoundException('model word not found');
+        }
         $person = Person::where('full_name_word_id', $fullNameWord->id)->first();
         if (empty($person)) {
             throw new ModelNotFoundException('model person not found');

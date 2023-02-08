@@ -138,7 +138,7 @@ class PersonServiceTest extends TestCase {
         $word = Word::factory()->create();
         $person = Person::factory()->create(['full_name_word_id' => $word->id]);;
         try {
-            $personService->fetchPersonWithFullNameWord($person);
+            $personService->fetchPersonWithFullNameWord($word);
         } catch (\Exception $exception) {
             $this->fail();
         }

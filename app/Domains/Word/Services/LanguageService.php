@@ -52,9 +52,11 @@ class LanguageService {
 
     public function checkForDuplicateName(): void {
         if ($this->language instanceof Language) {
-            $oldLanguage = Language::where('name', $this->language->name)
-                ->where('id', '!=', $this->language->id)
-                ->first();
+            $oldLanguage = Language::where('name', $this->language->name);
+            if (! empty($this->language->id)) {
+                $oldLanguage->where('id', '!=', $this->language->id);
+            }
+            $oldLanguage = $oldLanguage->first();
             if ($oldLanguage instanceof Language) {
                 throw new DuplicateModelException('duplicate language model, with same name. attributes: : ' .
                     implode(',', $oldLanguage->getAttributes()));
