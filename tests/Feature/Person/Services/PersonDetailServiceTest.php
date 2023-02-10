@@ -7,6 +7,8 @@ use App\Domains\Person\Models\Person;
 use App\Domains\Person\Models\PersonDetail;
 use App\Domains\Person\Services\PersonDetailService;
 use App\Domains\Word\Models\Word;
+use App\Exceptions\DuplicateModelException;
+use App\Exceptions\InvalidTypeException;
 use App\Exceptions\ModelTypeException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -160,4 +162,54 @@ class PersonDetailServiceTest extends TestCase {
         }
     }
 
+    /** @test */
+    public function check_for_duplicate_test() {
+        $personDetailService = new PersonDetailService();
+        try {
+            $personDetailService->checkForDuplicate();
+            $this->fail();
+        } catch(\Exception $exception) {
+            $this->assertTrue(in_array(get_class($exception), [
+                ModelNotFoundException::class,
+                InvalidTypeException::class,
+            ]));
+        }
+        $person = Person::factory()->create();
+        $link = Link::factory()->create();
+        $personDetailService->personDetail = PersonDetail::factory()->create([
+            'person_id' => $person->id,
+            'relation_type' => 'link',
+            'relation_id' => $link->id,
+            'type' => PersonDetailService::TYPE_PORTRAIT
+        ]);
+        try {
+            $personDetailService->checkForDuplicate();
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+        $personDetailService->personDetail = new PersonDetail([
+            'person_id' => $person->id,
+            'relation_type' => 'link',
+            'relation_id' => $link->id,
+            'type' => PersonDetailService::TYPE_PORTRAIT
+        ]);
+        try {
+            $personDetailService->checkForDuplicate();
+            $this->fail();
+        } catch (\Exception $exception) {
+            $this->assertTrue($exception instanceof DuplicateModelException);
+        }
+        $personDetailService->personDetail->save();
+        try {
+            $personDetailService->checkForDuplicate();
+            $this->fail();
+        } catch (\Exception $exception) {
+            $this->assertTrue($exception instanceof DuplicateModelException);
+        }
+    }
+
+    /** @test */
+    public function remove_relation_test() {
+        $this->fail();
+    }
 }

@@ -5,9 +5,14 @@ namespace App\Domains\Person\Services;
 use App\Domains\Media\Models\Link;
 use App\Domains\Person\Models\Person;
 use App\Domains\Person\Models\PersonDetail;
+use App\Domains\Person\Services\DTOs\PersonDetailMorphDTO;
 use App\Domains\Word\Models\Word;
 use App\Exceptions\CanNotSaveModelException;
+use App\Exceptions\DuplicateModelException;
+use App\Exceptions\InvalidTypeException;
 use App\Exceptions\ModelTypeException;
+use Arr;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -74,5 +79,55 @@ class PersonDetailService {
             throw new ModelTypeException('class ' . get_class($relation) . ' or type' . $type . ' not expected for person detail relation');
         }
         throw new ModelNotFoundException('model person detail not found');
+    }
+
+    public function checkForDuplicate(): void {
+        if (! $this->personDetail instanceof PersonDetail) {
+            throw new ModelNotFoundException('model person detail not found');
+        }
+        $relation = $this->personDetail->relation;
+        if (empty($relation)) {
+            throw new ModelNotFoundException(
+                'model relation of person detail not found'
+            );
+        }
+        if (empty($this->personDetail->type)) {
+            throw new InvalidTypeException('type of person detail can not be empty');
+        }
+        if (empty($this->personDetail->person_id)) {
+            throw new ModelNotFoundException('model person of person detail not found');
+        }
+        $duplicate = PersonDetail::where('relation_id', $this->personDetail->relation_id)
+            ->where('relation_type', $this->personDetail->relation_type)
+            ->where('type', $this->personDetail->type)
+            ->where('person_id', $this->personDetail->person_id);
+        if (!empty($this->personDetail->id)) {
+            $duplicate->where('id', '!=', $this->personDetail->id);
+        }
+        $duplicate = $duplicate->first();
+        if (!empty($duplicate)) {
+            throw new DuplicateModelException('person detail model already exited');
+        }
+        return;
+    }
+
+    public function removeRelation(Person $person, Model $relation): void {
+        /** @todo */
+        if (empty ($person->id)) {
+            throw new ModelNotFoundException('model person not found');
+        }
+        if (empty($relation->id)) {
+            throw new ModelNotFoundException('model relation for person detail not found');
+        }
+        $morphData = $this->fetchMorphDataByObject($relation);
+        $presonDetail = PersonDetail::where('person_id', $person->id)
+            ->where('relation_id', $relation->id)
+            ->where('relation_type', $relation->morphName)
+            ->first();
+        if (empty($presonDetail)) {
+            throw new ModelNotFoundException('model person detail not found');
+        }
+        $morphData->morph_class
+        $presonDetail->delete();
     }
 }

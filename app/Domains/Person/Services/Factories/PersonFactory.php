@@ -33,17 +33,24 @@ class PersonFactory {
                 $personDetailService->setRelation($personFactoryDTO->relation, $personFactoryDTO->type);
                 $personDetailService->setPerson($personService->fetchOrCreatePerson());
                 try {
-                    /** @todo */
-                    $personDetailService->checkForDuplicateRelation();
+                    $personDetailService->checkForDuplicate();
                     $personDetailService->savePersonDetail();
                 } catch (DuplicateModelException $exception) {}
             }
-//            $personService->fetchRelations(); // bunch of links or words
+            $personDetailService = new PersonDetailService();
             foreach ($personService->fetchRelations() as $relation) {
+                $toBeRemoved = true;
                 foreach ($personFactoryDTOs as $personFactoryDTO) {
-                    if ($relation->id != $personFactoryDTO->relation->id) {
-                        $personService->removeRelation($relation);
+                    if ($relation->id == $personFactoryDTO->relation->id) {
+                        $toBeRemoved = false;
                     }
+                }
+                /** @todo */
+                if ($toBeRemoved) {
+                    $personDetailService->removeRelation(
+                        $personService->fetchOrCreatePerson(),
+                        $relation
+                    );
                 }
             }
         }

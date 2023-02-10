@@ -2,7 +2,6 @@
 
 namespace App\Domains\Person\Services\Factories\DTOs;
 
-use App\Domains\Word\Models\Language;
 use Illuminate\Database\Eloquent\Model;
 use romanzipp\DTO\AbstractData;
 

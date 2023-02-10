@@ -2,7 +2,10 @@
 
 namespace Tests\Feature\Person\Services;
 
+use App\Domains\Media\Models\Link;
 use App\Domains\Person\Models\Person;
+use App\Domains\Person\Models\PersonDetail;
+use App\Domains\Person\Services\PersonDetailService;
 use App\Domains\Person\Services\PersonService;
 use App\Domains\Word\Models\Word;
 use App\Exceptions\DuplicateModelException;
@@ -143,6 +146,47 @@ class PersonServiceTest extends TestCase {
             $this->fail();
         }
 
+    }
+
+    /** @test */
+    public function fetch_relations_test() {
+        $personService = new PersonService();
+        try {
+            $personService->fetchRelations();
+            $this->fail();
+        } catch (\Exception $exception) {
+            $this->assertTrue($exception instanceof ModelNotFoundException);
+        }
+        $personService->person = Person::factory()->create();
+        $link = Link::factory()->create();
+        $word = Word::factory()->create();
+        $personDetail1 = PersonDetail::factory()->create([
+            'person_id' => $personService->person->id,
+            'type' => PersonDetailService::TYPE_PORTRAIT,
+            'relation_type' => 'link',
+            'relation_id' => $link->id,
+        ]);
+        $personDetail2 = PersonDetail::factory()->create([
+            'person_id' => $personService->person->id,
+            'type' => PersonDetailService::TYPE_DESCRIPTION,
+            'relation_type' => 'word',
+            'relation_id' => $word->id,
+        ]);
+        try {
+            $collection = $personService->fetchRelations();
+            $this->assertTrue(count($collection) == 2);
+            foreach($collection as $relation) {
+                if (get_class($relation) == Link::class) {
+                    $this->assertTrue($relation->id == $link->id);
+                } elseif (get_class($relation) == Word::class) {
+                    $this->assertTrue($relation->id == $word->id);
+                } else {
+                    $this->fail();
+                }
+            }
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
     }
 
 }

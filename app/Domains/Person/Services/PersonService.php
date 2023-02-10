@@ -6,7 +6,9 @@ use App\Domains\Person\Models\Person;
 use App\Domains\Word\Models\Word;
 use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\DuplicateModelException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Collection as SupportCollection;
 
 /**
  * @property Person|null $person
@@ -90,5 +92,18 @@ class PersonService {
         return $person;
     }
 
+    public function fetchRelations(): SupportCollection {
+        if ($this->person instanceof Person) {
+            $response = collect([]);
+            foreach ($this->person->words as $word) {
+                $response[] = $word;
+            }
+            foreach ($this->person->links as $link) {
+                $response[] = $link;
+            }
+            return $response;
+        }
+        throw new ModelNotFoundException('model person not found');
+    }
 
 }
