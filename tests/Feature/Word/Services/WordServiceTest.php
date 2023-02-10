@@ -3,6 +3,8 @@
 namespace Tests\Feature\Word\Services;
 
 use App\Domains\Word\Models\Word;
+use App\Domains\Word\Models\WordDetailBig;
+use App\Domains\Word\Models\WordDetailSmall;
 use App\Domains\Word\Services\WordDetailBigService;
 use App\Domains\Word\Services\WordDetailSmallService;
 use App\Domains\Word\Services\WordService;
@@ -144,5 +146,45 @@ class WordServiceTest extends TestCase {
         $wordService->word = Word::factory()->create();
         $word = $wordService->fetchOrCreateWord();
         $this->assertTrue(! empty($word->id));
+    }
+
+    /** @test */
+    public function remove_test() {
+        $wordService = new WordService();
+        try {
+            $wordService->remove(new Word());
+            $this->fail();
+        } catch (\Exception $exception) {
+            $this->assertTrue($exception instanceof ModelNotFoundException);
+        }
+        $word = Word::factory()->create();
+        $wordId = $word->id;
+        $wordDetailSmallId1 = WordDetailSmall::factory()->create([
+            'word_id' => $word->id
+        ])->id;
+        $wordDetailSmallId2 = WordDetailSmall::factory()->create([
+            'word_id' => $word->id
+        ])->id;
+        $wordDetailBigId1 = WordDetailBig::factory()->create([
+            'word_id' => $word->id
+        ])->id;
+        $wordDetailBigId2 = WordDetailBig::factory()->create([
+            'word_id' => $word->id
+        ])->id;
+        try {
+            $wordService->remove($word);
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+        $smallWords = WordDetailSmall::whereIn('id', [
+            $wordDetailSmallId1, $wordDetailSmallId2
+        ])->get();
+        $this->assertTrue(count($smallWords) == 0);
+        $bigWords = WordDetailBig::whereIn('id', [
+            $wordDetailBigId1, $wordDetailBigId2
+        ])->get();
+        $this->assertTrue(count($bigWords) == 0);
+        $word = Word::where('id', $wordId)->first();
+        $this->assertEmpty($word);
     }
 }

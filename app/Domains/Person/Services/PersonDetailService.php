@@ -3,10 +3,13 @@
 namespace App\Domains\Person\Services;
 
 use App\Domains\Media\Models\Link;
+use App\Domains\Media\Services\LinkService;
 use App\Domains\Person\Models\Person;
 use App\Domains\Person\Models\PersonDetail;
 use App\Domains\Person\Services\DTOs\PersonDetailMorphDTO;
 use App\Domains\Word\Models\Word;
+use App\Domains\Word\Services\WordService;
+use App\Exceptions\CanNotDeleteModelException;
 use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\DuplicateModelException;
 use App\Exceptions\InvalidTypeException;
@@ -15,6 +18,7 @@ use Arr;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property PersonDetail|null $personDetail
@@ -111,23 +115,38 @@ class PersonDetailService {
         return;
     }
 
+    public function fetchRelationSerices(): array {
+        return [
+            Link::class => LinkService::class,
+            Word::class => WordService::class,
+        ];
+    }
+
     public function removeRelation(Person $person, Model $relation): void {
-        /** @todo */
         if (empty ($person->id)) {
             throw new ModelNotFoundException('model person not found');
         }
         if (empty($relation->id)) {
             throw new ModelNotFoundException('model relation for person detail not found');
         }
-        // $morphData = $this->fetchMorphDataByObject($relation);
-        // $presonDetail = PersonDetail::where('person_id', $person->id)
-        //     ->where('relation_id', $relation->id)
-        //     ->where('relation_type', $relation->morphName)
-        //     ->first();
-        // if (empty($presonDetail)) {
-        //     throw new ModelNotFoundException('model person detail not found');
-        // }
-        // $morphData->morph_class
-        // $presonDetail->delete();
+        $presonDetail = PersonDetail::where('person_id', $person->id)
+            ->where('relation_id', $relation->id)
+            ->where('relation_type', $relation->morphName)
+            ->first();
+        if (empty($presonDetail)) {
+            throw new ModelNotFoundException('model person detail not found');
+        }
+        DB::beginTransaction();
+        if (count($relation->morphLinks) <= 1) {
+            $serviceClass = $this->fetchRelationSerices()[get_class($relation)];
+            $service = new $serviceClass();
+            $service->remove($relation);
+        }
+        if (! $presonDetail->delete()) {
+            throw new CanNotDeleteModelException(
+                'can not delete model person detail with id: '. $presonDetail->id
+            );
+        }
+        DB::commit();
     }
 }

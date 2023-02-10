@@ -110,4 +110,22 @@ class LinkServiceTest extends TestCase {
         $this->assertNotEmpty($link->id);
     }
 
+    /** @test */
+    public function remove_test() {
+        $linkService = new LinkService();
+        try {
+            $linkService->remove(new Link());
+            $this->fail();
+        } catch (\Exception $exception) {
+            $this->assertTrue($exception instanceof ModelNotFoundException);
+        }
+        $link = Link::factory()->create();
+        try {
+            $linkService->remove($link);
+        } catch (\Exception $exception) {
+            dd($exception->getMessage());
+            $this->fail();
+        }
+    }
+
 }

@@ -3,6 +3,7 @@
 namespace App\Domains\Media\Services;
 
 use App\Domains\Media\Models\Link;
+use App\Exceptions\CanNotDeleteModelException;
 use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\InvalidTypeException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -66,6 +67,18 @@ class LinkService {
             return $this->link;
         }
         return (new Link());
+    }
+
+    public function remove(Link $link): void {
+        if (! empty($link->id)) {
+            if (! $link->delete()) {
+                throw new CanNotDeleteModelException(
+                    'can not delete link model with id: ' . $link->id
+                );
+            }
+            return;
+        }
+        throw new ModelNotFoundException('model link not found');
     }
 
 }

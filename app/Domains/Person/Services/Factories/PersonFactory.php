@@ -45,7 +45,6 @@ class PersonFactory {
                         $toBeRemoved = false;
                     }
                 }
-                /** @todo */
                 if ($toBeRemoved) {
                     $personDetailService->removeRelation(
                         $personService->fetchOrCreatePerson(),

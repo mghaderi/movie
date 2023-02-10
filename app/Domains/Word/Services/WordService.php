@@ -6,9 +6,11 @@ use App\Domains\Word\Models\Word;
 use App\Domains\Word\Models\WordDetailBig;
 use App\Domains\Word\Models\WordDetailSmall;
 use App\Domains\Word\Services\Interfaces\WordDetailServiceInterface;
+use App\Exceptions\CanNotDeleteModelException;
 use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\InvalidTypeException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 class WordService {
 
@@ -83,5 +85,33 @@ class WordService {
             return $this->word;
         }
         return (new Word());
+    }
+
+    public function remove(Word $word): void {
+        if (! empty($word->id)) {
+            DB::beginTransaction();
+            foreach ($word->wordDetailSmalls as $small) {
+                if (! $small->delete()) {
+                    throw new CanNotDeleteModelException(
+                        'can not delete word detail small model with id: ' . $small->id
+                    );
+                }
+            }
+            foreach ($word->wordDetailBigs as $big) {
+                if (! $big->delete()) {
+                    throw new CanNotDeleteModelException(
+                        'can not delete word detail big model with id: ' . $big->id
+                    );
+                }
+            }
+            if (! $word->delete()) {
+                throw new CanNotDeleteModelException(
+                    'can not delete word model with id: ' . $word->id
+                );
+            }
+            DB::commit();
+            return;
+        }
+        throw new ModelNotFoundException('model word not found');
     }
 }

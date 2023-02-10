@@ -3,10 +3,12 @@
 namespace Tests\Feature\Person\Services;
 
 use App\Domains\Media\Models\Link;
+use App\Domains\Media\Services\LinkService;
 use App\Domains\Person\Models\Person;
 use App\Domains\Person\Models\PersonDetail;
 use App\Domains\Person\Services\PersonDetailService;
 use App\Domains\Word\Models\Word;
+use App\Domains\Word\Services\WordService;
 use App\Exceptions\DuplicateModelException;
 use App\Exceptions\InvalidTypeException;
 use App\Exceptions\ModelTypeException;
@@ -209,7 +211,108 @@ class PersonDetailServiceTest extends TestCase {
     }
 
     /** @test */
+    public function fetch_relation_services_test() {
+        $personDetailService = new PersonDetailService();
+        $response = $personDetailService->fetchRelationSerices();
+        $this->assertArrayHasKey(Link::class, $response);
+        $this->assertArrayHasKey(Word::class, $response);
+        $this->assertTrue($response[Link::class] == LinkService::class);
+        $this->assertTrue($response[Word::class] == WordService::class);
+        unlink($response[Link::class]);
+        unlink($response[Word::class]);
+        $this->assertEmpty($response);
+    }
+
+    /** @test */
     public function remove_relation_test() {
-        $this->fail();
+        $personDetailService = new PersonDetailService();
+        try {
+            $personDetailService->removeRelation(new Person(), Link::factory()->create());
+            $this->fail();
+        } catch (\Exception $exception) {
+            $this->assertTrue($exception instanceof ModelNotFoundException);
+        }
+        try {
+            $personDetailService->removeRelation(Person::factory()->create(), new Link());
+            $this->fail();
+        } catch (\Exception $exception) {
+            $this->assertTrue($exception instanceof ModelNotFoundException);
+        }
+        try {
+            $personDetailService->removeRelation(
+                Person::factory()->create(),
+                Link::factory()->create()
+            );
+            $this->fail();
+        } catch (\Exception $exception) {
+            $this->assertTrue($exception instanceof ModelNotFoundException);
+        }
+        $person = Person::factory()->create();
+        $link = Link::factory()->create();
+        $linkId = $link->id;
+        $word = Word::factory()->create();
+        $wordId = $word->id;
+        $dontRemoveWord = Word::factory()->create();
+        $dontRemoveWordId = $dontRemoveWord->id;
+        $dontRemoveLink = Link::factory()->create();
+        $dontRemoveLinkId = $dontRemoveLink->id;
+        $otherPerson = Person::factory()->create();
+        $personDetailLinkDontRemove = PersonDetail::factory()->create([
+            'person_id' => $otherPerson->id,
+            'relation_id' => $dontRemoveLink->id,
+            'relation_type' => $dontRemoveLink->morphName,
+            'type' => PersonDetailService::TYPE_PORTRAIT
+        ]);
+        $personDetailLinkDontRemoveId = $personDetailLinkDontRemove->id;
+        $personDetailWordDontRemove = PersonDetail::factory()->create([
+            'person_id' => $otherPerson->id,
+            'relation_id' => $dontRemoveWord->id,
+            'relation_type' => $dontRemoveWord->morphName,
+            'type' => PersonDetailService::TYPE_DESCRIPTION
+        ]);
+        $personDetailWordDontRemoveId = $personDetailWordDontRemove->id;
+        $personDetailWordDontRemoveWord = PersonDetail::factory()->create([
+            'person_id' => $person->id,
+            'relation_id' => $dontRemoveWord->id,
+            'relation_type' => $dontRemoveWord->morphName,
+            'type' => PersonDetailService::TYPE_DESCRIPTION
+        ]);
+        $personDetailWordDontRemoveWordId = $personDetailWordDontRemoveWord->id;
+        $personDetailLinkDontRemoveLink = PersonDetail::factory()->create([
+            'person_id' => $person->id,
+            'relation_id' => $dontRemoveLink->id,
+            'relation_type' => $dontRemoveLink->morphName,
+            'type' => PersonDetailService::TYPE_PORTRAIT
+        ]);
+        $personDetailLinkDontRemoveLinkId = $personDetailLinkDontRemoveLink->id;
+        $personDetailLink = PersonDetail::factory()->create([
+            'person_id' => $person->id,
+            'relation_id' => $link->id,
+            'relation_type' => $link->morphName,
+            'type' => PersonDetailService::TYPE_PORTRAIT
+        ]);
+        $personDetailLinkId = $personDetailLink->id;
+        $personDetailWord = PersonDetail::factory()->create([
+            'person_id' => $person->id,
+            'relation_id' => $word->id,
+            'relation_type' => $word->morphName,
+            'type' => PersonDetailService::TYPE_DESCRIPTION
+        ]);
+        $personDetailWordId = $personDetailWord->id;
+        try {
+            $personDetailService->removeRelation($person, $link);
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+        $this->assertEmpty(Link::where('id', $linkId)->first());
+        $this->assertEmpty(Word::where('id', $wordId)->first());
+        $this->assertEmpty(PersonDetail::where('id', $personDetailLinkId)->first());
+        $this->assertEmpty(PersonDetail::where('id', $personDetailWordId)->first());
+        $this->assertEmpty(PersonDetail::where('id', $personDetailLinkDontRemoveLinkId)->first());
+        $this->assertEmpty(PersonDetail::where('id', $personDetailWordDontRemoveWordId)->first());
+        $this->assertNotEmpty(Link::where('id', $dontRemoveLinkId)->first());
+        $this->assertNotEmpty(Word::where('id', $dontRemoveWordId)->first());
+        $this->assertNotEmpty(PersonDetail::where('id', $personDetailWordDontRemoveId)->first());
+        $this->assertNotEmpty(PersonDetail::where('id', $personDetailLinkDontRemoveId)->first());
     }
 }
