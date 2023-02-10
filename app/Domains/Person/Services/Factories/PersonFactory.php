@@ -61,6 +61,6 @@ class PersonFactory {
             }
         }
         DB::commit();
-        return $personService->fetchOrCreatePerson();
+        return $personService->fetchPersonWithFullNameWord($fullName);
     }
 }

@@ -6,7 +6,6 @@ use App\Domains\Media\Models\Link;
 use App\Domains\Media\Services\LinkService;
 use App\Domains\Person\Models\Person;
 use App\Domains\Person\Models\PersonDetail;
-use App\Domains\Person\Services\DTOs\PersonDetailMorphDTO;
 use App\Domains\Word\Models\Word;
 use App\Domains\Word\Services\WordService;
 use App\Exceptions\CanNotDeleteModelException;
@@ -14,8 +13,6 @@ use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\DuplicateModelException;
 use App\Exceptions\InvalidTypeException;
 use App\Exceptions\ModelTypeException;
-use Arr;
-use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -148,5 +145,6 @@ class PersonDetailService {
             );
         }
         DB::commit();
+        return;
     }
 }
