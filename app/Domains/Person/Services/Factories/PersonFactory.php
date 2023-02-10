@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\DB;
 class PersonFactory {
 
     public function generate(Word $firstName, Word $lastName, Word $fullName, PersonFactoryDTO ...$personFactoryDTOs): Person {
-        /** @todo */
         DB::beginTransaction();
         $personService = new PersonService();
         $personService->setPerson($personService->fetchOrCreatePerson());
@@ -51,6 +50,14 @@ class PersonFactory {
                         $relation
                     );
                 }
+            }
+        } else {
+            $personDetailService = new PersonDetailService();
+            foreach ($personService->fetchRelations() as $relation) {
+                $personDetailService->removeRelation(
+                    $personService->fetchOrCreatePerson(),
+                    $relation
+                );
             }
         }
         DB::commit();
