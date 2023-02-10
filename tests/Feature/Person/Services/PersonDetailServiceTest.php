@@ -218,8 +218,8 @@ class PersonDetailServiceTest extends TestCase {
         $this->assertArrayHasKey(Word::class, $response);
         $this->assertTrue($response[Link::class] == LinkService::class);
         $this->assertTrue($response[Word::class] == WordService::class);
-        unlink($response[Link::class]);
-        unlink($response[Word::class]);
+        unset($response[Link::class]);
+        unset($response[Word::class]);
         $this->assertEmpty($response);
     }
 
@@ -301,6 +301,9 @@ class PersonDetailServiceTest extends TestCase {
         $personDetailWordId = $personDetailWord->id;
         try {
             $personDetailService->removeRelation($person, $link);
+            $personDetailService->removeRelation($person, $word);
+            $personDetailService->removeRelation($person, $dontRemoveLink);
+            $personDetailService->removeRelation($person, $dontRemoveWord);
         } catch (\Exception $exception) {
             $this->fail();
         }
