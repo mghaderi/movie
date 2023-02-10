@@ -119,15 +119,15 @@ class PersonDetailService {
         if (empty($relation->id)) {
             throw new ModelNotFoundException('model relation for person detail not found');
         }
-        $morphData = $this->fetchMorphDataByObject($relation);
-        $presonDetail = PersonDetail::where('person_id', $person->id)
-            ->where('relation_id', $relation->id)
-            ->where('relation_type', $relation->morphName)
-            ->first();
-        if (empty($presonDetail)) {
-            throw new ModelNotFoundException('model person detail not found');
-        }
-        $morphData->morph_class
-        $presonDetail->delete();
+        // $morphData = $this->fetchMorphDataByObject($relation);
+        // $presonDetail = PersonDetail::where('person_id', $person->id)
+        //     ->where('relation_id', $relation->id)
+        //     ->where('relation_type', $relation->morphName)
+        //     ->first();
+        // if (empty($presonDetail)) {
+        //     throw new ModelNotFoundException('model person detail not found');
+        // }
+        // $morphData->morph_class
+        // $presonDetail->delete();
     }
 }

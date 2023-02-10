@@ -7,17 +7,14 @@ use App\Services\PossibleMorphService;
 trait HasMorph {
 
     public function getPossibleMorphNamesAttribute(): array {
-        $possibleMorphService = $this->setPossibleMorphClasses(new PossibleMorphService());
-        return $possibleMorphService->getPossibleMorphNames();
+        return (new PossibleMorphService())->getPossibleMorphNames(self::class);
     }
 
     public function getPossibleMorphClassesAttribute(): array {
-        $possibleMorphService = $this->setPossibleMorphClasses(new PossibleMorphService());
-        return $possibleMorphService->getPossibleMorphClasses();
+        return (new PossibleMorphService())->getPossibleMorphClasses(self::class);
     }
 
     public function getPossibleMorphsAttribute(): array {
-        $possibleMorphService = $this->setPossibleMorphClasses(new PossibleMorphService());
-        return $possibleMorphService->getPossibleMorphs();
+        return (new PossibleMorphService())->getPossibleMorphs(self::class);
     }
 }

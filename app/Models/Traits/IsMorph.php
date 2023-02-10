@@ -9,4 +9,9 @@ trait IsMorph {
         $possibleMorphService = new PossibleMorphService();
         return $possibleMorphService->getAllMorphs()[self::class];
     }
+
+    public function getMorphLinksAttribute(): string {
+        $possibleMorphService = new PossibleMorphService();
+        return $possibleMorphService->getAllMorphLinks()[self::class];
+    }
 }

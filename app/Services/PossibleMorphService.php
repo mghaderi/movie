@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Domains\Media\Models\Link;
+use App\Domains\Media\Models\MediaDetailRelation;
+use App\Domains\Person\Models\PersonDetail;
 use App\Domains\Word\Models\Language;
 use App\Domains\Word\Models\Word;
 
@@ -13,7 +15,20 @@ class PossibleMorphService {
         Word::class => 'word',
         Link::class => 'link',
     ];
-    private $possibleMorphs = [];
+
+    private $allMorphLinks = [
+        Link::class => [
+            PersonDetail::class,
+            MediaDetailRelation::class,
+        ],
+        Word::class => [
+            PersonDetail::class,
+            MediaDetailRelation::class,
+        ],
+        Language::class => [
+            MediaDetailRelation::class,
+        ],
+    ];
 
     public function getAllMorphNames(): array {
         return array_values($this->allMorphs);
@@ -27,21 +42,33 @@ class PossibleMorphService {
         return $this->allMorphs;
     }
 
-    public function setPossibleMorphs(...$morphClasses): void {
-        foreach ($morphClasses as $morphClass) {
-            $this->possibleMorphs[$morphClass] = $this->allMorphs[$morphClass];
+    public function getAllMorphLinks(): array {
+        return $this->allMorphLinks;
+    }
+
+    public function getPossibleMorphNames(string $class): array {
+        return array_values($this->getPossibleMorphs($class));
+    }
+
+    public function getPossibleMorphClasses(string $class): array {
+        return array_keys($this->getPossibleMorphs($class));
+    }
+
+    public function getPossibleMorphs(string $class): array {
+        $isMorphClasses = [];
+        foreach ($this->allMorphLinks as $isMorphClass => $hasMorphClasses) {
+            foreach ($hasMorphClasses as $hasMorphClass) {
+                if (($class == $hasMorphClass) && (! in_array($isMorphClass, $isMorphClasses))) {
+                    $isMorphClasses[] = $isMorphClass;
+                }
+            }
         }
-    }
-
-    public function getPossibleMorphNames(): array {
-        return array_values($this->possibleMorphs);
-    }
-
-    public function getPossibleMorphClasses(): array {
-        return array_keys($this->possibleMorphs);
-    }
-
-    public function getPossibleMorphs(): array {
-        return $this->possibleMorphs;
+        $result = [];
+        foreach ($isMorphClasses as $isMorphClass) {
+            if (! empty($this->allMorphs[$isMorphClass])) {
+                $result[$isMorphClass] = $this->allMorphs[$isMorphClass];
+            }
+        }
+        return $result;
     }
 }

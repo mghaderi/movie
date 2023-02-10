@@ -4,7 +4,6 @@ namespace App\Domains\Person\Models;
 
 use App\Domains\Media\Models\Link;
 use App\Domains\Word\Models\Word;
-use App\Models\Interfaces\MorphInterface;
 use App\Models\Traits\HasMorph;
 use App\Services\PossibleMorphService;
 use Database\Factories\person\PersonDetailFactory;
@@ -22,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string|null $updated_at
  * @property Person|null $person
  */
-class PersonDetail extends Model implements MorphInterface {
+class PersonDetail extends Model {
 
     use HasMorph;
     use HasFactory;
@@ -51,14 +50,6 @@ class PersonDetail extends Model implements MorphInterface {
             'relation_type',
             'relation_id'
         );
-    }
-
-    public function setPossibleMorphClasses(PossibleMorphService $possibleMorphService): PossibleMorphService {
-        $possibleMorphService->setPossibleMorphs(
-            Word::class,
-            Link::class
-        );
-        return $possibleMorphService;
     }
 
     protected static function newFactory() {

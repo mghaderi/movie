@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property Collection $mediaDetailData
  * @property Collection $relation
  */
-class MediaDetailRelation extends Model implements MorphInterface {
+class MediaDetailRelation extends Model {
 
     use HasMorph;
     use HasFactory;
@@ -70,15 +70,6 @@ class MediaDetailRelation extends Model implements MorphInterface {
             'relation_type',
             'relation_id'
         );
-    }
-
-    public function setPossibleMorphClasses(PossibleMorphService $possibleMorphService): PossibleMorphService {
-        $possibleMorphService->setPossibleMorphs(
-            Language::class,
-            Word::class,
-            Link::class,
-        );
-        return $possibleMorphService;
     }
 
     protected static function newFactory() {
