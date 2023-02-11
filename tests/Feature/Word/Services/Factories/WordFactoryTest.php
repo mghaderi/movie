@@ -28,6 +28,7 @@ class WordFactoryTest extends TestCase {
                 new WordFactoryDTO(['language' => $persian, 'value' => 'سلام']),
             );
         } catch(\Exception $exception) {
+            dd($exception->getMessage());
             $this->fail();
         }
         $this->assertTrue($word instanceof Word);

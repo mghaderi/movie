@@ -172,4 +172,61 @@ class WordDetailServiceTest extends TestCase {
         }
     }
 
+    /** @test */
+    public function fetch_word_details_test() {
+        $wordDetailSmallService = new WordDetailSmallService();
+        $wordDetailBigService = new WordDetailBigService();
+        $language = Language::factory()->create();
+        $value = 'test';
+        $word = Word::factory()->create();
+        WordDetailSmall::factory()->create();
+        WordDetailBig::factory()->create();
+        WordDetailSmall::factory()->create([
+            'word_id' => $word->id,
+            'language_id' => $language->id,
+            'value' => $value
+        ]);
+        WordDetailBig::factory()->create([
+            'word_id' => $word->id,
+            'language_id' => $language->id,
+            'value' => $value
+        ]);
+        try {
+            $wordDetailSmalls = $wordDetailSmallService->fetchWordDetails();
+            $this->assertTrue(count($wordDetailSmalls) == 2);
+            $wordDetailBigs = $wordDetailBigService->fetchWordDetails();
+            $this->assertTrue(count($wordDetailBigs) == 2);
+            $wordDetailSmalls = $wordDetailSmallService->fetchWordDetails(word:$word);
+            $this->assertTrue(count($wordDetailSmalls) == 1);
+            $wordDetailBigs = $wordDetailBigService->fetchWordDetails(word:$word);
+            $this->assertTrue(count($wordDetailBigs) == 1);
+            $wordDetailSmalls = $wordDetailSmallService->fetchWordDetails(language: $language);
+            $this->assertTrue(count($wordDetailSmalls) == 1);
+            $wordDetailBigs = $wordDetailBigService->fetchWordDetails(language: $language);
+            $this->assertTrue(count($wordDetailBigs) == 1);
+            $wordDetailSmalls = $wordDetailSmallService->fetchWordDetails(value: $value);
+            $this->assertTrue(count($wordDetailSmalls) == 1);
+            $wordDetailBigs = $wordDetailBigService->fetchWordDetails(value: $value);
+            $this->assertTrue(count($wordDetailBigs) == 1);
+            $wordDetailSmalls = $wordDetailSmallService->fetchWordDetails(value: $value, word:$word);
+            $this->assertTrue(count($wordDetailSmalls) == 1);
+            $wordDetailBigs = $wordDetailBigService->fetchWordDetails(value:$value, word: $word);
+            $this->assertTrue(count($wordDetailBigs) == 1);
+            $wordDetailSmalls = $wordDetailSmallService->fetchWordDetails(value: $value, language: $language);
+            $this->assertTrue(count($wordDetailSmalls) == 1);
+            $wordDetailBigs = $wordDetailBigService->fetchWordDetails(value: $value, language: $language);
+            $this->assertTrue(count($wordDetailBigs) == 1);
+            $wordDetailSmalls = $wordDetailSmallService->fetchWordDetails(word: $word, language: $language);
+            $this->assertTrue(count($wordDetailSmalls) == 1);
+            $wordDetailBigs = $wordDetailBigService->fetchWordDetails(word: $word, language: $language);
+            $this->assertTrue(count($wordDetailBigs) == 1);
+            $wordDetailSmalls = $wordDetailSmallService->fetchWordDetails(word: $word, language: $language, value: $value);
+            $this->assertTrue(count($wordDetailSmalls) == 1);
+            $wordDetailBigs = $wordDetailBigService->fetchWordDetails(word: $word, language:$language, value: $value);
+            $this->assertTrue(count($wordDetailBigs) == 1);
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+    }
+
 }
