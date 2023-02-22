@@ -6,11 +6,13 @@ use App\Domains\Word\Models\Word;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @property int|null $word_id
  * @property int|null $short_name
  * @property Word|null $word
+ * @property Collection $cities
  */
 class Country extends Model {
 

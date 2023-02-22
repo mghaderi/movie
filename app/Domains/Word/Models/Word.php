@@ -25,6 +25,8 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property Collection $persons
  * @property Collection $mediaDetailRelations
  * @property Collection $mediaDetails
+ * @property Collection $cities
+ * @property Collection $countries
  */
 class Word extends Model {
 
