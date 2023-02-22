@@ -5,12 +5,8 @@ namespace Tests\Feature\Location\Services\Factories;
 use App\Domains\Location\Services\Factories\CountryFactory;
 use App\Domains\Word\Models\Word;
 use App\Exceptions\DuplicateModelException;
-use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-
-use function PHPUnit\Framework\assertNotEmpty;
-use function PHPUnit\Framework\assertTrue;
 
 class CountryFactoryTest extends TestCase {
 
