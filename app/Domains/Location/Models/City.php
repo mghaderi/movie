@@ -18,7 +18,7 @@ class City extends Model {
 
     use HasFactory;
 
-    protected $table = 'countries';
+    protected $table = 'cities';
 
     protected $fillable = [
         'word_id',
