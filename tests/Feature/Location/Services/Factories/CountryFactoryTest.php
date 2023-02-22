@@ -18,7 +18,6 @@ class CountryFactoryTest extends TestCase {
         $word1 = Word::factory()->create();
         $word1Id = $word1->id;
         $word2 = Word::factory()->create();
-        $word2Id = $word2->id;
         try {
             $country = $countryFactory->generate('IRI', $word1);
             $this->assertNotEmpty($country->id);
