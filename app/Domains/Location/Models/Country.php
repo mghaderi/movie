@@ -5,6 +5,7 @@ namespace App\Domains\Location\Models;
 use App\Domains\Word\Models\Word;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int|null $word_id
@@ -26,6 +27,14 @@ class Country extends Model {
             'word_id',
             'id',
             'fk-countries-word_id'
+        );
+    }
+
+    public function cities(): HasMany {
+        return $this->hasMany(
+            City::class,
+            'country_id',
+            'id'
         );
     }
 }

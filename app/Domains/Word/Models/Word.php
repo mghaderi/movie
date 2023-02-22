@@ -2,6 +2,8 @@
 
 namespace App\Domains\Word\Models;
 
+use App\Domains\Location\Models\City;
+use App\Domains\Location\Models\Country;
 use App\Domains\Media\Models\MediaDetail;
 use App\Domains\Media\Models\MediaDetailRelation;
 use App\Domains\Person\Models\Person;
@@ -46,6 +48,22 @@ class Word extends Model {
     public function wordDetailSmalls(): HasMany {
         return $this->hasMany(
             WordDetailSmall::class,
+            'word_id',
+            'id'
+        );
+    }
+
+    public function cities(): HasMany {
+        return $this->hasMany(
+            City::class,
+            'word_id',
+            'id'
+        );
+    }
+
+    public function countries(): HasMany {
+        return $this->hasMany(
+            Country::class,
             'word_id',
             'id'
         );
