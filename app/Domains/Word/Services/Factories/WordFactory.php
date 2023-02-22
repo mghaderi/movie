@@ -34,7 +34,6 @@ class WordFactory {
                 $wordDetailService = $wordService->wordDetailServiceObject();
                 $wordDetails = $wordDetailService->fetchWordDetails(
                     language: $wordFactoryDTO->language,
-                    value: $wordFactoryDTO->value,
                     word: $wordService->fetchOrCreateWord()
                 );
                 if ($wordDetails->first()) {

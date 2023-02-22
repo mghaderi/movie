@@ -21,6 +21,8 @@ class WordFactoryTest extends TestCase {
         $wordFactory = new WordFactory();
         $english = Language::factory()->create(['name' => 'english']);
         $persian = Language::factory()->create(['name' => 'persian']);
+        $french = Language::factory()->create(['name' => 'french']);
+        $german = Language::factory()->create(['name' => 'german']);
         try {
             $word = $wordFactory->generate(
                 WordService::WORD_TYPE_SMALL,
@@ -52,6 +54,87 @@ class WordFactoryTest extends TestCase {
         } else {
             $this->fail();
         }
+        try {
+            $word2 = $wordFactory->generate(
+                WordService::WORD_TYPE_SMALL,
+                new WordFactoryDTO(['language' => $english, 'value' => 'hello']),
+                new WordFactoryDTO(['language' => $persian, 'value' => 'سلام']),
+            );
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+        if ($word->id != $word2->id) {
+            $this->fail();
+        }
+        try {
+            $word2 = $wordFactory->generate(
+                WordService::WORD_TYPE_SMALL,
+                new WordFactoryDTO(['language' => $english, 'value' => 'hello']),
+            );
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+        if ($word->id != $word2->id) {
+            $this->fail();
+        }
+        $this->assertTrue(count($word2->wordDetailSmalls) == 2);
+        $findPersian = false;
+        $findEnglish = false;
+        foreach($word2->wordDetailSmalls as $wordDetailSmall) {
+            if (
+                ($wordDetailSmall->value == 'hello') &&
+                ($wordDetailSmall->language_id == $english->id)
+            ) {
+                $findEnglish = true;
+            } elseif (
+                ($wordDetailSmall->value == 'سلام') &&
+                ($wordDetailSmall->language_id == $persian->id)
+            ) {
+                $findPersian = true;
+            }
+        }
+        $this->assertTrue($findEnglish);
+        $this->assertTrue($findPersian);
+        try {
+            $word2 = $wordFactory->generate(
+                WordService::WORD_TYPE_SMALL,
+                new WordFactoryDTO(['language' => $english, 'value' => 'hello']),
+                new WordFactoryDTO(['language' => $french, 'value' => 'helloInFrench']),
+                new WordFactoryDTO(['language' => $german, 'value' => 'helloInGerman']),
+            );
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+        if ($word->id != $word2->id) {
+            $this->fail();
+        }
+        $this->assertTrue(count($word2->wordDetailSmalls) == 4);
+        try {
+            $word2 = $wordFactory->generate(
+                WordService::WORD_TYPE_SMALL,
+                new WordFactoryDTO(['language' => $english, 'value' => 'hello']),
+                new WordFactoryDTO(['language' => $french, 'value' => 'heeeelloInFrench']),
+                new WordFactoryDTO(['language' => $german, 'value' => 'heeeelloInGerman']),
+            );
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+        if ($word->id != $word2->id) {
+            $this->fail();
+        }
+        $this->assertNotEmpty(
+            $word2->wordDetailSmalls()->where('value', 'heeeelloInFrench')->first()
+        );
+        $this->assertNotEmpty(
+            $word2->wordDetailSmalls()->where('value', 'heeeelloInGerman')->first()
+        );
+        $this->assertNotEmpty(
+            $word2->wordDetailSmalls()->where('value', 'hello')->first()
+        );
+        $this->assertNotEmpty(
+            $word2->wordDetailSmalls()->where('value', 'سلام')->first()
+        );
+        $this->assertTrue(count($word2->wordDetailSmalls) == 4);
     }
 
     /** @test */
@@ -59,6 +142,8 @@ class WordFactoryTest extends TestCase {
         $wordFactory = new WordFactory();
         $english = Language::factory()->create(['name' => 'english']);
         $persian = Language::factory()->create(['name' => 'persian']);
+        $french = Language::factory()->create(['name' => 'french']);
+        $german = Language::factory()->create(['name' => 'german']);
         try {
             $word = $wordFactory->generate(
                 WordService::WORD_TYPE_BIG,
@@ -90,5 +175,86 @@ class WordFactoryTest extends TestCase {
         } else {
             $this->fail();
         }
+        try {
+            $word2 = $wordFactory->generate(
+                WordService::WORD_TYPE_BIG,
+                new WordFactoryDTO(['language' => $english, 'value' => 'hello']),
+                new WordFactoryDTO(['language' => $persian, 'value' => 'سلام']),
+            );
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+        if ($word->id != $word2->id) {
+            $this->fail();
+        }
+        try {
+            $word2 = $wordFactory->generate(
+                WordService::WORD_TYPE_BIG,
+                new WordFactoryDTO(['language' => $english, 'value' => 'hello']),
+            );
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+        if ($word->id != $word2->id) {
+            $this->fail();
+        }
+        $this->assertTrue(count($word2->wordDetailBigs) == 2);
+        $findPersian = false;
+        $findEnglish = false;
+        foreach ($word2->wordDetailBigs as $wordDetailBig) {
+            if (
+                ($wordDetailBig->value == 'hello') &&
+                ($wordDetailBig->language_id == $english->id)
+            ) {
+                $findEnglish = true;
+            } elseif (
+                ($wordDetailBig->value == 'سلام') &&
+                ($wordDetailBig->language_id == $persian->id)
+            ) {
+                $findPersian = true;
+            }
+        }
+        $this->assertTrue($findEnglish);
+        $this->assertTrue($findPersian);
+        try {
+            $word2 = $wordFactory->generate(
+                WordService::WORD_TYPE_BIG,
+                new WordFactoryDTO(['language' => $english, 'value' => 'hello']),
+                new WordFactoryDTO(['language' => $french, 'value' => 'helloInFrench']),
+                new WordFactoryDTO(['language' => $german, 'value' => 'helloInGerman']),
+            );
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+        if ($word->id != $word2->id) {
+            $this->fail();
+        }
+        $this->assertTrue(count($word2->wordDetailBigs) == 4);
+        try {
+            $word2 = $wordFactory->generate(
+                WordService::WORD_TYPE_BIG,
+                new WordFactoryDTO(['language' => $english, 'value' => 'hello']),
+                new WordFactoryDTO(['language' => $french, 'value' => 'heeeelloInFrench']),
+                new WordFactoryDTO(['language' => $german, 'value' => 'heeeelloInGerman']),
+            );
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+        if ($word->id != $word2->id) {
+            $this->fail();
+        }
+        $this->assertNotEmpty(
+            $word2->wordDetailBigs()->where('value', 'heeeelloInFrench')->first()
+        );
+        $this->assertNotEmpty(
+            $word2->wordDetailBigs()->where('value', 'heeeelloInGerman')->first()
+        );
+        $this->assertNotEmpty(
+            $word2->wordDetailBigs()->where('value', 'hello')->first()
+        );
+        $this->assertNotEmpty(
+            $word2->wordDetailBigs()->where('value', 'سلام')->first()
+        );
+        $this->assertTrue(count($word2->wordDetailBigs) == 4);
     }
 }
