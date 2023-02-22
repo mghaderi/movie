@@ -69,7 +69,7 @@ class CountryServiceTest extends TestCase {
     }
 
     /** @test */
-    public function fetch_or_create_country() {
+    public function fetch_or_create_country_test() {
         $countryService = new CountryService();
         $country = $countryService->fetchOrCreateCountry();
         $this->assertEmpty($country->id);
@@ -77,5 +77,25 @@ class CountryServiceTest extends TestCase {
         $countryService->saveCountry();
         $country = $countryService->fetchOrCreateCountry();
         $this->assertNotEmpty($country->id);
+    }
+
+    /** @test */
+    public function fetch_countries_test() {
+        $word = Word::factory()->create();
+        $country = Country::factory()->create(['word_id' => $word->id, 'short_name' => 'IRI']);
+        $countryService = new CountryService();
+        $countries = $countryService->fetchCountries(
+            shortName: 'IRI',
+            word: $word
+        );
+        $this->assertTrue(count($countries) == 1);
+        $countries = $countryService->fetchCountries(
+            word: $word
+        );
+        $this->assertTrue(count($countries) == 1);
+        $countries = $countryService->fetchCountries(
+            shortName: 'IRI',
+        );
+        $this->assertTrue(count($countries) == 1);
     }
 }

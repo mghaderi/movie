@@ -5,6 +5,7 @@ namespace App\Domains\Location\Services;
 use App\Domains\Location\Models\Country;
 use App\Domains\Word\Models\Word;
 use App\Exceptions\CanNotSaveModelException;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CountryService {
@@ -45,5 +46,12 @@ class CountryService {
             return $this->country;
         }
         return (new Country());
+    }
+
+    public function fetchCountries(
+        ?string $shortName = null,
+        ?Word $word = null
+    ): Collection {
+        return Country::filter($shortName, $word->id ?? null)->get();
     }
 }
