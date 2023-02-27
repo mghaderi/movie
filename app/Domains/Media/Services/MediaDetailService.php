@@ -44,9 +44,7 @@ class MediaDetailService
     public function saveMediaDetail(): void {
         if ($this->mediaDetail instanceof MediaDetail) {
             try {
-                if (!$this->mediaDetail->save()) {
-                    throw new CanNotSaveModelException('model media detail can not be saved.');
-                }
+                $this->mediaDetail->saveOrFail();
                 return;
             } catch (\Exception|\Throwable $exception) {
                 throw new CanNotSaveModelException('model media detail can not be saved: ' . $exception->getMessage());

@@ -5,7 +5,6 @@ namespace Tests\Feature\Media\Services;
 use App\Domains\Media\Models\Media;
 use App\Domains\Media\Models\MediaDetail;
 use App\Domains\Media\Services\MediaDetailService;
-use App\Domains\Media\Services\MediaService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

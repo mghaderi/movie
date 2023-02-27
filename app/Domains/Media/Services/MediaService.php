@@ -33,9 +33,7 @@ class MediaService {
     public function saveMedia(): void {
         if ($this->media instanceof Media) {
             try {
-                if (!$this->media->save()) {
-                    throw new CanNotSaveModelException('model media can not be saved.');
-                }
+                $this->media->saveOrFail();
                 return;
             } catch (\Exception|\Throwable $exception) {
                 throw new CanNotSaveModelException('model media can not be saved: ' . $exception->getMessage());

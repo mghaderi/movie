@@ -35,6 +35,9 @@ class MediaDetailDatumService {
     }
 
     public function setMediaDetail(MediaDetail $mediaDetail): void {
+        if (empty($mediaDetail->id)) {
+            throw new ModelNotFoundException('model media detail not found');
+        }
         if ($this->mediaDetailDatum instanceof MediaDetailDatum) {
             $this->mediaDetailDatum->media_detail_id = $mediaDetail->id;
             return;
