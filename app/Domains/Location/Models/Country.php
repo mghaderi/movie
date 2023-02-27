@@ -3,6 +3,7 @@
 namespace App\Domains\Location\Models;
 
 use App\Domains\Word\Models\Word;
+use App\Models\Traits\IsMorph;
 use Database\Factories\location\CountryFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @property int|null $word_id
@@ -20,6 +22,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Country extends Model {
 
     use HasFactory;
+    use IsMorph;
 
     protected $table = 'countries';
 
@@ -60,5 +63,14 @@ class Country extends Model {
         if (!empty($wordId)) {
             $query->where('word_id', $wordId);
         }
+    }
+
+    public function mediaDetailRelations(): MorphMany {
+        return $this->morphMany(
+            MediaDetailRelation::class,
+            'relation',
+            'relation_type',
+            'relation_id'
+        );
     }
 }

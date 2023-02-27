@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Domains\Location\Models\Country;
 use App\Domains\Media\Models\Link;
 use App\Domains\Media\Models\MediaDetailRelation;
 use App\Domains\Person\Models\PersonDetail;
@@ -14,6 +15,7 @@ class PossibleMorphService {
         Language::class => 'language',
         Word::class => 'word',
         Link::class => 'link',
+        Country::class => 'country',
     ];
 
     private $allMorphLinks = [
@@ -26,6 +28,9 @@ class PossibleMorphService {
             MediaDetailRelation::class,
         ],
         Language::class => [
+            MediaDetailRelation::class,
+        ],
+        Country::class => [
             MediaDetailRelation::class,
         ],
     ];
