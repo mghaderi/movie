@@ -2,9 +2,7 @@
 
 namespace Tests\Feature\Media\Services;
 
-use App\Domains\Media\Models\Link;
 use App\Domains\Media\Models\Media;
-use App\Domains\Media\Services\LinkService;
 use App\Domains\Media\Services\MediaService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
