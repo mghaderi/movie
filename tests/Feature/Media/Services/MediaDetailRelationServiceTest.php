@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Media\Services;
 
-use App\Domains\Media\Models\Link;
 use App\Domains\Media\Models\MediaDetail;
 use App\Domains\Media\Models\MediaDetailRelation;
 use App\Domains\Media\Services\MediaDetailRelationService;
@@ -62,21 +61,45 @@ class MediaDetailRelationServiceTest extends TestCase {
         $this->assertNotEmpty($mediaDetailRelation->id);
     }
 
-//    /** @test */
-//    public function set_relation_test() {
-//        $mediaDetailRelationService = new MediaDetailRelationService();
-//        $link = Link::factory()->create();
-//        try {
-//            $mediaDetailRelationService->setRelation($link);
-//            $this->fail();
-//        } catch (\Exception $exception) {
-//            $this->assertTrue($exception instanceof ModelNotFoundException);
-//        }
-//        $mediaDetailRelationService->mediaDetailRelation = MediaDetailRelation::factory()->create();
-//        try {
-//            $mediaDetailRelationService->setRelation($link);
-//        } catch (\Exception $exception) {
-//            $this->fail();
-//        }
-//    }
+    /** @test */
+    public function set_relation_test() {
+        $mediaDetailRelationService = new MediaDetailRelationService();
+        $mediaDetailRelation = MediaDetailRelation::factory()->create();
+        $possibleMorphObject = $mediaDetailRelation->possibleMorphClasses[0]::factory()->create();
+        try {
+            $mediaDetailRelationService->setRelation($possibleMorphObject);
+            $this->fail();
+        } catch (\Exception $exception) {
+            $this->assertTrue($exception instanceof ModelNotFoundException);
+        }
+        $mediaDetailRelationService->mediaDetailRelation = $mediaDetailRelation;
+        foreach ($mediaDetailRelation->possibleMorphClasses as $possibleMorphClass) {
+            $possibleMorphObject = $possibleMorphClass::factory()->create();
+            try {
+                $mediaDetailRelationService->setRelation($possibleMorphObject);
+                $this->assertTrue($mediaDetailRelationService->mediaDetailRelation->relation_type == $possibleMorphObject->morphName);
+                $this->assertTrue($mediaDetailRelationService->mediaDetailRelation->relation_id == $possibleMorphObject->id);
+            } catch (\Exception $exception) {
+                $this->fail();
+            }
+        }
+    }
+
+    /** @test */
+    public function save_media_detail_relation_test() {
+        $mediaDetailRelationService = new MediaDetailRelationService();
+        try {
+            $mediaDetailRelationService->saveMediaDetailRelation();
+            $this->fail();
+        } catch (\Exception $exception) {
+            $this->assertTrue($exception instanceof ModelNotFoundException);
+        }
+        $mediaDetailRelationService->mediaDetailRelation = new MediaDetailRelation();
+        try {
+            $mediaDetailRelationService->saveMediaDetailRelation();
+            $this->assertNotEmpty($mediaDetailRelationService->mediaDetailRelation->id);
+        } catch (\Exception $exception) {
+            $this->fail();
+        }
+    }
 }
