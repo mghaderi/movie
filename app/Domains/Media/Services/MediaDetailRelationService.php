@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MediaDetailRelationService {
+
     public ?MediaDetailRelation $mediaDetailRelation = null;
 
     public function setMediaDetailRelation(MediaDetailRelation $mediaDetailRelation): void {
