@@ -21,12 +21,16 @@ class CountryFactoryTest extends TestCase {
         try {
             $country = $countryFactory->generate('IRI', $word1);
             $this->assertNotEmpty($country->id);
+            $this->assertTrue($country->word_id == $word1->id);
+            $this->assertTrue($country->short_name == 'IRI');
         } catch (\Exception $exception) {
             $this->fail();
         }
         try {
             $country = $countryFactory->generate('IRI', $word2);
             $this->assertNotEmpty($country->id);
+            $this->assertTrue($country->word_id == $word2->id);
+            $this->assertTrue($country->short_name == 'IRI');
             $oldWord = Word::where('id', $word1Id)->first();
             $this->assertEmpty($oldWord);
         } catch (\Exception $exception) {
@@ -35,12 +39,14 @@ class CountryFactoryTest extends TestCase {
         try {
             $country = $countryFactory->generate('IRI', $word2);
             $this->assertNotEmpty($country->id);
+            $this->assertTrue($country->word_id == $word2->id);
+            $this->assertTrue($country->short_name == 'IRI');
         } catch (\Exception $exception) {
             $this->fail();
         }
         try {
             $country = $countryFactory->generate('FR', $word2);
-            $this->assertNotEmpty($country->id);
+            $this->fail();
         } catch (\Exception $exception) {
             $this->assertTrue($exception instanceof DuplicateModelException);
         }

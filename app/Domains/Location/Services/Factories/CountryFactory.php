@@ -18,7 +18,6 @@ class CountryFactory {
         $countiesWord = $countryService->fetchCountries(word: $word);
         if (
             $countiesWord->first() &&
-            ($countiesWord->first()->word_id != $word->id) &&
             ($countiesWord->first()->short_name != $shortName)
         ) {
             throw new DuplicateModelException(
