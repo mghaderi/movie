@@ -25,7 +25,8 @@ class Media extends Model {
 
     protected $fillable = [
         'tt_name',
-        'type'
+        'type',
+        'status'
     ];
 
     public function mediaDetails(): HasMany {
@@ -65,13 +66,17 @@ class Media extends Model {
     public function scopeFilter(
         Builder $query,
         ?string $ttName = null,
-        ?int $type = null
+        ?string $type = null,
+        ?string $status = null
     ): void {
         if (!empty($ttName)) {
             $query->where('tt_name', $ttName);
         }
         if (!empty($type)) {
             $query->where('type', $type);
+        }
+        if (!empty($status)) {
+            $query->where('status', $status);
         }
     }
 }

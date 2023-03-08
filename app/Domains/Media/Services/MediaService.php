@@ -43,7 +43,11 @@ class MediaService {
         throw new ModelNotFoundException('model media not found');
     }
 
-    public function fetchMedias(?string $ttName = null, ?string $type = null): Collection {
-        return Media::filter($ttName, $type)->get();
+    public function fetchMedias(
+        ?string $ttName = null,
+        ?string $type = null,
+        ?string $status = null
+    ): Collection {
+        return Media::filter($ttName, $type, $status)->get();
     }
 }

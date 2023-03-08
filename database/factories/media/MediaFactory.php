@@ -13,6 +13,7 @@ class MediaFactory extends Factory {
         return [
             'tt_name' => null,
             'type' => null,
+            'status' => null,
             'created_at' => now(),
             'updated_at' => now()
         ];

@@ -74,11 +74,16 @@ class MediaServiceTest extends TestCase {
 
     /** @test */
     public function fetch_medias_test() {
-        Media::factory()->create(['tt_name' => 'test_tt_name', 'type' => 'test_type']);
+        Media::factory()->create([
+            'tt_name' => 'test_tt_name',
+            'type' => 'test_type',
+            'status' => 'test_status'
+        ]);
         $mediaService = new MediaService();
         $medias = $mediaService->fetchMedias(
             ttName: 'test_tt_name',
-            type: 'test_type'
+            type: 'test_type',
+            status: 'test_status',
         );
         $this->assertTrue(count($medias) == 1);
         $medias = $mediaService->fetchMedias(
@@ -89,7 +94,10 @@ class MediaServiceTest extends TestCase {
             type: 'test_type'
         );
         $this->assertTrue(count($medias) == 1);
-
+        $medias = $mediaService->fetchMedias(
+            status: 'test_status'
+        );
+        $this->assertTrue(count($medias) == 1);
     }
 
 }
