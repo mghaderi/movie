@@ -72,4 +72,24 @@ class MediaServiceTest extends TestCase {
         $this->assertNotEmpty($media->id);
     }
 
+    /** @test */
+    public function fetch_medias_test() {
+        Media::factory()->create(['tt_name' => 'test_tt_name', 'type' => 'test_type']);
+        $mediaService = new MediaService();
+        $medias = $mediaService->fetchMedias(
+            ttName: 'test_tt_name',
+            type: 'test_type'
+        );
+        $this->assertTrue(count($medias) == 1);
+        $medias = $mediaService->fetchMedias(
+            ttName: 'test_tt_name'
+        );
+        $this->assertTrue(count($medias) == 1);
+        $medias = $mediaService->fetchMedias(
+            type: 'test_type'
+        );
+        $this->assertTrue(count($medias) == 1);
+
+    }
+
 }

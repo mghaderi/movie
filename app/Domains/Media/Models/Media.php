@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * @property string|null $tt_name
@@ -59,5 +60,18 @@ class Media extends Model {
 
     protected static function newFactory() {
         return MediaFactory::new();
+    }
+
+    public function scopeFilter(
+        Builder $query,
+        ?string $ttName = null,
+        ?int $type = null
+    ): void {
+        if (!empty($ttName)) {
+            $query->where('tt_name', $ttName);
+        }
+        if (!empty($type)) {
+            $query->where('type', $type);
+        }
     }
 }

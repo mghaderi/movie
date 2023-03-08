@@ -5,6 +5,7 @@ namespace App\Domains\Media\Services;
 use App\Domains\Media\Models\Media;
 use App\Exceptions\CanNotSaveModelException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Collection;
 
 class MediaService {
 
@@ -40,5 +41,9 @@ class MediaService {
             }
         }
         throw new ModelNotFoundException('model media not found');
+    }
+
+    public function fetchMedias(?string $ttName = null, ?string $type = null): Collection {
+        return Media::filter($ttName, $type)->get();
     }
 }
