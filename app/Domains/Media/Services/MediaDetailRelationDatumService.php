@@ -37,6 +37,9 @@ class MediaDetailRelationDatumService {
     }
 
     public function setMediaDetailRelation(MediaDetailRelation $mediaDetailRelation): void {
+        if (empty($mediaDetailRelation->id)) {
+            throw new ModelNotFoundException('can not find media detail relation model');
+        }
         if ($this->mediaDetailRelationDatum instanceof MediaDetailRelationDatum) {
             $this->mediaDetailRelationDatum->media_detail_relation_id = $mediaDetailRelation->id;
             return;
@@ -45,6 +48,9 @@ class MediaDetailRelationDatumService {
     }
 
     public function setMediaDetailDatum(MediaDetailDatum $mediaDetailDatum): void {
+        if (empty($mediaDetailDatum->id)) {
+            throw new ModelNotFoundException('can not find media detail datum model');
+        }
         if ($this->mediaDetailRelationDatum instanceof MediaDetailRelationDatum) {
             $this->mediaDetailRelationDatum->media_detail_datum_id = $mediaDetailDatum->id;
             return;
