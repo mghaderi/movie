@@ -6,6 +6,7 @@ use App\Domains\Location\Models\Country;
 use App\Domains\Location\Services\CountryService;
 use App\Domains\Word\Models\Word;
 use App\Domains\Word\Services\WordService;
+use App\Exceptions\CanNotDeleteModelException;
 use App\Exceptions\DuplicateModelException;
 use Illuminate\Support\Facades\DB;
 
@@ -28,7 +29,9 @@ class CountryFactory {
             $countryService->setCountry($countiesShorName->first());
             $oldWord = $countiesShorName->first()->word;
             if (!empty($oldWord) && ($oldWord->id != $word->id)) {
-                (new WordService())->remove($oldWord);
+                try {
+                    (new WordService())->remove($oldWord, $countiesShorName->first());
+                } catch (\Exception $exception) {}
             }
         } else {
             $countryService->setCountry($countryService->fetchOrCreateCountry());
