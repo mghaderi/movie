@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Domains\Genre\Models\Genre;
 use App\Domains\Location\Models\Country;
 use App\Domains\Media\Models\Link;
 use App\Domains\Media\Models\MediaDetailRelation;
