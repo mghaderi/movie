@@ -2,6 +2,9 @@
 
 namespace App\Domains\Word\Services;
 
+use App\Domains\Genre\Models\Genre;
+use App\Domains\Location\Models\City;
+use App\Domains\Location\Models\Country;
 use App\Domains\Word\Models\Word;
 use App\Domains\Word\Models\WordDetailBig;
 use App\Domains\Word\Models\WordDetailSmall;
@@ -9,6 +12,7 @@ use App\Domains\Word\Services\Interfaces\WordDetailServiceInterface;
 use App\Exceptions\CanNotDeleteModelException;
 use App\Exceptions\CanNotSaveModelException;
 use App\Exceptions\InvalidTypeException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
@@ -87,30 +91,51 @@ class WordService {
         return (new Word());
     }
 
-    public function remove(Word $word): void {
+    public function remove(Word $word, Model $attachedModel): void {
         if (! empty($word->id)) {
-            DB::beginTransaction();
-            foreach ($word->wordDetailSmalls as $small) {
-                if (! $small->delete()) {
-                    throw new CanNotDeleteModelException(
-                        'can not delete word detail small model with id: ' . $small->id
-                    );
-                }
-            }
-            foreach ($word->wordDetailBigs as $big) {
-                if (! $big->delete()) {
-                    throw new CanNotDeleteModelException(
-                        'can not delete word detail big model with id: ' . $big->id
-                    );
-                }
-            }
-            if (! $word->delete()) {
+            if (
+                (count($word->morphLinks) > 1) ||
+                (
+                    (count($word->morphLinks) == 1) &&
+                    ($word->morphLinks->first()->id != $attachedModel->id))
+                ) {
                 throw new CanNotDeleteModelException(
                     'can not delete word model with id: ' . $word->id
                 );
             }
-            DB::commit();
-            return;
+            DB::beginTransaction();
+            try {
+                foreach ($word->wordDetailSmalls as $small) {
+                    if (!$small->delete()) {
+                        throw new CanNotDeleteModelException(
+                            'can not delete word detail small model with id: ' . $small->id
+                        );
+                    }
+                }
+                foreach ($word->wordDetailBigs as $big) {
+                    if (!$big->delete()) {
+                        throw new CanNotDeleteModelException(
+                            'can not delete word detail big model with id: ' . $big->id
+                        );
+                    }
+                }
+                if (!$word->delete()) {
+                    throw new CanNotDeleteModelException(
+                        'can not delete word model with id: ' . $word->id
+                    );
+                }
+                DB::commit();
+                return;
+            } catch (\Exception $exception) {
+                DB::rollBack();
+                throw $exception;
+
+            } catch (\Throwable $exception) {
+                DB::rollBack();
+                throw new CanNotDeleteModelException(
+                    'can not delete word model with id: ' . $word->id
+                );
+            }
         }
         throw new ModelNotFoundException('model word not found');
     }
