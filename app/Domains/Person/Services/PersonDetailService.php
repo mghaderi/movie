@@ -137,7 +137,9 @@ class PersonDetailService {
         if (count($relation->morphLinks) <= 1) {
             $serviceClass = $this->fetchRelationSerices()[get_class($relation)];
             $service = new $serviceClass();
-            $service->remove($relation);
+            try {
+                $service->remove($relation, $presonDetail);
+            } catch (\Exception $exception) {}
         }
         if (! $presonDetail->delete()) {
             throw new CanNotDeleteModelException(
