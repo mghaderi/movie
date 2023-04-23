@@ -2,6 +2,7 @@
 
 namespace App\Domains\Word\Models;
 
+use App\Domains\Genre\Models\Genre;
 use App\Domains\Location\Models\City;
 use App\Domains\Location\Models\Country;
 use App\Domains\Media\Models\MediaDetail;
@@ -66,6 +67,14 @@ class Word extends Model {
     public function countries(): HasMany {
         return $this->hasMany(
             Country::class,
+            'word_id',
+            'id'
+        );
+    }
+
+    public function genres(): HasMany {
+        return $this->hasMany(
+            Genre::class,
             'word_id',
             'id'
         );
