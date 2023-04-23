@@ -16,6 +16,7 @@ class PossibleMorphService {
         Word::class => 'word',
         Link::class => 'link',
         Country::class => 'country',
+        Genre::class => 'genre',
     ];
 
     private $allMorphLinks = [
@@ -31,6 +32,9 @@ class PossibleMorphService {
             MediaDetailRelation::class,
         ],
         Country::class => [
+            MediaDetailRelation::class,
+        ],
+        Genre::class => [
             MediaDetailRelation::class,
         ],
     ];
