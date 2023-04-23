@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Word\Services;
 
+use App\Domains\Genre\Models\Genre;
 use App\Domains\Word\Models\Word;
 use App\Domains\Word\Models\WordDetailBig;
 use App\Domains\Word\Models\WordDetailSmall;
@@ -152,12 +153,15 @@ class WordServiceTest extends TestCase {
     public function remove_test() {
         $wordService = new WordService();
         try {
-            $wordService->remove(new Word());
+            $wordService->remove(new Word(), new Word());
             $this->fail();
         } catch (\Exception $exception) {
             $this->assertTrue($exception instanceof ModelNotFoundException);
         }
         $word = Word::factory()->create();
+        $genre1 = Genre::factory()->create([
+            'word_id' => $word->id
+        ]);
         $wordId = $word->id;
         $wordDetailSmallId1 = WordDetailSmall::factory()->create([
             'word_id' => $word->id
@@ -172,7 +176,7 @@ class WordServiceTest extends TestCase {
             'word_id' => $word->id
         ])->id;
         try {
-            $wordService->remove($word);
+            $wordService->remove($word, $genre1);
         } catch (\Exception $exception) {
             $this->fail();
         }
