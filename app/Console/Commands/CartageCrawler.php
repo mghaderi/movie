@@ -2,6 +2,14 @@
 
 namespace App\Console\Commands;
 
+use App\Domains\Media\Models\Media;
+use App\Domains\Media\Models\MediaCrawl;
+use App\Domains\Media\Services\Factories\DTOs\MediaFactoryData;
+use App\Domains\Media\Services\Factories\DTOs\MediaFactoryImageData;
+use App\Domains\Media\Services\Factories\DTOs\MediaFactorySourceData;
+use App\Domains\Media\Services\Factories\DTOs\MediaFactorySourceLinkData;
+use App\Domains\Media\Services\Factories\MediaFactory;
+use App\Exceptions\CanNotSaveModelException;
 use DOMDocument;
 use DOMXPath;
 use Illuminate\Console\Command;
@@ -9,6 +17,9 @@ use Illuminate\Support\Facades\Http;
 
 class CartageCrawler extends Command
 {
+
+    public static $firstMoviewNumber = null;
+
     /**
      * The name and signature of the console command.
      *
@@ -39,26 +50,140 @@ class CartageCrawler extends Command
      * @return int
      */
     public function handle() {
-        $moviesData = [];
-        $movies = $this->sendRequest(
-            'get',
-            'https://moviecottage.icu/wp-json/wp/v2/search?page=1&per_page=100',
-            [], [] , 0
-        )->json();
-        foreach($movies as $movie) {
-            if ($movie['id'] = 29351) {
-                $moviesData[] = [
-                    'movieId' => $movie['id'],
-                    'movieTitle' => $movie['title'],
-                    'movieUrl' => $movie['url'],
-                    'movieDetail' => $this->movieDetailData($movie['_links']['self'][0]['href']),
-                    'movieCrawl' => $this->fetchCrawlData($movie['url']),
-                    'movieSource' => $this->fetchMovieLinks($movie['id']),
-                ];
-                dd($moviesData);
+        $data = $this->fetchMovie();
+        while($data['movie'] !== false) {
+            $movieData = [
+                'movieId' => $data['movie']['id'],
+                'movieTitle' => $data['movie']['title'],
+                'movieUrl' => $data['movie']['url'],
+                'movieDetail' => $this->movieDetailData($data['movie']['_links']['self'][0]['href']),
+                'movieCrawl' => $this->fetchCrawlData($data['movie']['url']),
+                'movieSource' => $this->fetchMovieLinks($data['movie']['id']),
+            ];
+            $mediaFactory = new MediaFactory();
+            dump($movieData, $this->createMediaFactoryData($movieData));
+            $media = $mediaFactory->generate($this->createMediaFactoryData($movieData));
+            if ($media instanceof Media) {
+                if (! $data['object']->save()) {
+                    throw new CanNotSaveModelException('can not save media crawl');
+                }
+            }
+            $data = $this->fetchMovie();
+        }
+        dd("done");
+    }
+
+    public function createMediaFactoryData (array $movieData) {
+        $mediaFactoryImages = [];
+        if (!empty($movieData['movieDetail']['media_data'])) {
+            foreach ($movieData['movieDetail']['media_data'] as $index => $value) {
+                if (substr($index, strlen($index) - 4) == '_url') {
+                    $name = substr($index, 0, strlen($index) - 4);
+                    $type = $movieData['movieDetail']['media_data'][$name.'_type'] ?? '';
+                    $mediaFactoryImages[] = new MediaFactoryImageData([
+                        'url' => $value,
+                        'type' => $type,
+                        'name' => $name
+                    ]);
+                }
             }
         }
-        dd($moviesData);
+        $sources = [];
+        if (!empty($movieData['movieSource'])) {
+            foreach($movieData['movieSource'] as $source) {
+                if (empty($source['source'])) {
+                    $links = [];
+                    if (!empty($source['links'])) {
+                        foreach ($source['links'] as $link) {
+                            $links[] = new MediaFactorySourceLinkData([
+                                'link' => $link['source'] ?? '',
+                                'quality' => $link['quallity'] ?? ''
+                            ]);
+                        }
+                    }
+                    $sources[] = new MediaFactorySourceData([
+                        'season' => (string)$source['season'] ?? '',
+                        'eposode' => (string)$source['episode'] ?? '',
+                        'sourceLinks' => $links,
+                    ]);
+                } else {
+                    if (empty($sources)) {
+                        $sources[0] = new MediaFactorySourceData([
+                            'season' => '1',
+                            'eposode' => '1',
+                            'sourceLinks' => [],
+                        ]);
+                    }
+                    $sources[0]->sourceLinks[] = new MediaFactorySourceLinkData([
+                        'link' => $source['source'] ?? '',
+                        'quality' => $source['quallity'] ?? ''
+                    ]);
+                }
+            }
+        }
+        $mediaFactoryData = new MediaFactoryData();
+        $mediaFactoryData->title = $movieData['movieTitle'] ?? '';
+        $mediaFactoryData->ttName = $movieData['movieDetail']['ttName'] ?? '';
+        $mediaFactoryData->status = $movieData['movieDetail']['status'] ?? '';
+        $mediaFactoryData->mediaFactoryImages = $mediaFactoryImages;
+        $mediaFactoryData->actors = $movieData['movieDetail']['actor_data'] ?? [];
+        $mediaFactoryData->counties = $movieData['movieDetail']['country_data'] ?? [];
+        $mediaFactoryData->directors = $movieData['movieDetail']['director_data'] ?? [];
+        $mediaFactoryData->genres = $movieData['movieDetail']['genre_data'] ?? [];
+        $mediaFactoryData->languages = $movieData['movieDetail']['language_data'] ?? [];
+        $mediaFactoryData->releases = $movieData['movieDetail']['release_data'] ?? [];
+        $mediaFactoryData->categories = $movieData['movieDetail']['category_data'] ?? [];
+        $mediaFactoryData->rate = $movieData['movieCrawl']['rate'] ?? '';
+        $mediaFactoryData->score = $movieData['movieCrawl']['score'] ?? '';
+        $mediaFactoryData->others = $movieData['movieCrawl']['other'] ?? [];
+        $mediaFactoryData->sources = $sources;
+        return $mediaFactoryData;
+    }
+
+    public function fetchFirstMoviewNumber(): int
+    {
+        $number = 3532;
+        $movie = $this->sendRequest('get', 'https://moviecottage.icu/wp-json/wp/v2/search?page=' . $number . '&per_page=1', [], [], 0)->json();
+        while (!empty($movie)) {
+            $number++;
+            $movie = $this->sendRequest('get', 'https://moviecottage.icu/wp-json/wp/v2/search?page=' . $number . '&per_page=1', [], [], 0)->json();
+        }
+        $number--;
+        $movie = $this->sendRequest('get', 'https://moviecottage.icu/wp-json/wp/v2/search?page=' . $number . '&per_page=1', [], [], 0)->json();
+        $tt = substr($movie[0]['url'], strlen('https://moviecottage.icu/'), 2);
+        while ($tt !== 'tt') {
+            $number--;
+            $movie = $this->sendRequest('get', 'https://moviecottage.icu/wp-json/wp/v2/search?page=' . $number . '&per_page=1', [], [], 0)->json();
+            $tt = substr($movie[0]['url'], strlen('https://moviecottage.icu/'), 2);
+        }
+        return $number;
+    }
+
+    public function fetchMovie() {
+        if (self::$firstMoviewNumber === null) {
+            self::$firstMoviewNumber = $this->fetchFirstMoviewNumber();
+        }
+        $number = self::$firstMoviewNumber;
+        $number++;
+        $mediaCrawl = MediaCrawl::all()->first();
+        if (empty($mediaCrawl)) {
+            $mediaCrawl = new MediaCrawl();
+            $mediaCrawl->page_number = 1;
+        } else {
+            $mediaCrawl->page_number = $mediaCrawl->page_number + 1;
+        }
+        $number = $number - $mediaCrawl->page_number;
+        if ($number < 1) {
+            return [
+                'movie' => false,
+                'object' => null
+            ];
+        }
+        $movie = $this->sendRequest('get', 'https://moviecottage.icu/wp-json/wp/v2/search?page=' . $number . '&per_page=1', [], [], 0)->json();
+        return [
+            'movie' => $movie[0],
+            'object' => $mediaCrawl
+        ];
     }
 
     public function fetchMovieLinks($movieId) {
@@ -322,7 +447,7 @@ class CartageCrawler extends Command
                     return Http::get($url);
                 }
             }
-        } catch (\Exception $exception) {
+        } catch (\Exception|\Throwable $exception) {
             return $this->sendRequest($method , $url, $data, $cookies, $counter);
         }
         return [];
