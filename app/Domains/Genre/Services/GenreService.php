@@ -6,6 +6,7 @@ use App\Domains\Genre\Models\Genre;
 use App\Domains\Word\Models\Word;
 use App\Exceptions\CanNotSaveModelException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Collection;
 
 class GenreService {
 
@@ -45,6 +46,13 @@ class GenreService {
             return;
         }
         throw new ModelNotFoundException('can not find genre model');
+    }
+
+    public function fetchGenres(
+        ?string $name = null,
+        ?Word $word = null
+    ): Collection {
+        return Genre::filter($name, $word->id ?? null)->get();
     }
 
 }
