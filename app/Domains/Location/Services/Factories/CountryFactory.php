@@ -6,7 +6,6 @@ use App\Domains\Location\Models\Country;
 use App\Domains\Location\Services\CountryService;
 use App\Domains\Word\Models\Word;
 use App\Domains\Word\Services\WordService;
-use App\Exceptions\CanNotDeleteModelException;
 use App\Exceptions\DuplicateModelException;
 use Illuminate\Support\Facades\DB;
 
