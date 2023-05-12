@@ -2,9 +2,6 @@
 
 namespace App\Domains\Word\Services;
 
-use App\Domains\Genre\Models\Genre;
-use App\Domains\Location\Models\City;
-use App\Domains\Location\Models\Country;
 use App\Domains\Word\Models\Word;
 use App\Domains\Word\Models\WordDetailBig;
 use App\Domains\Word\Models\WordDetailSmall;
